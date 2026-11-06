@@ -1,0 +1,84 @@
+<template>
+    <lightning-card title="Onboarding Tasks" icon-name="standard:task">
+        <div slot="actions">
+            <span class={overallBadgeClass}>{overallStatus}</span>
+        </div>
+
+        <div class="slds-var-p-horizontal_medium">
+            <template lwc:if={isLoading}>
+                <div class="slds-is-relative slds-var-p-around_large">
+                    <lightning-spinner alternative-text="Loading onboarding tasks" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:elseif={error}>
+                <div class="slds-text-color_error slds-var-p-vertical_small" role="alert">{error}</div>
+            </template>
+
+            <template lwc:elseif={hasTasks}>
+                <!-- Overall progress -->
+                <div class="slds-var-m-bottom_medium">
+                    <div class="slds-grid slds-grid_align-spread slds-var-m-bottom_x-small">
+                        <span class="slds-text-title_bold">{progressLabel}</span>
+                        <span class="slds-text-body_small slds-text-color_weak">{percentLabel}</span>
+                    </div>
+                    <lightning-progress-bar value={percentComplete} size="large" variant="circular"
+                        aria-label="Onboarding progress"></lightning-progress-bar>
+                    <p class="slds-text-body_small slds-text-color_weak slds-var-m-top_x-small">
+                        Account status: <strong>{accountStatus}</strong>
+                    </p>
+                </div>
+
+                <!-- Task list -->
+                <ul class="slds-has-dividers_top-space">
+                    <template for:each={rows} for:item="row">
+                        <li key={row.id} class="slds-item task-row">
+                            <div class="slds-grid slds-gutters_x-small slds-grid_vertical-align-start">
+                                <div class="slds-col slds-grow-none">
+                                    <lightning-input
+                                        type="checkbox"
+                                        label={row.checkboxLabel}
+                                        variant="label-hidden"
+                                        checked={row.isCompleted}
+                                        disabled={row.isDisabled}
+                                        data-id={row.id}
+                                        onchange={handleComplete}
+                                    ></lightning-input>
+                                </div>
+                                <div class="slds-col slds-grow slds-has-flexi-truncate">
+                                    <div class="slds-grid slds-grid_align-spread slds-wrap">
+                                        <p class={row.nameClass}>
+                                            <span class="slds-text-color_weak slds-var-m-right_x-small">{row.order}</span>{row.name}
+                                        </p>
+                                        <span class={row.badgeClass}>{row.status}</span>
+                                    </div>
+                                    <template lwc:if={row.description}>
+                                        <p class="slds-text-body_small slds-text-color_weak">{row.description}</p>
+                                    </template>
+                                    <template lwc:if={row.isCompleted}>
+                                        <p class="slds-text-body_small slds-text-color_weak">
+                                            Completed
+                                            <template lwc:if={row.completedBy}> by {row.completedBy}</template>
+                                            <template lwc:if={row.completedDate}>
+                                                on
+                                                <lightning-formatted-date-time value={row.completedDate} year="numeric"
+                                                    month="short" day="2-digit" hour="2-digit" minute="2-digit">
+                                                </lightning-formatted-date-time>
+                                            </template>
+                                        </p>
+                                    </template>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+
+            <template lwc:else>
+                <div class="slds-text-align_center slds-var-p-vertical_medium slds-text-color_weak">
+                    No onboarding tasks yet. Set the Account Status to <strong>Start Onboarding</strong> to generate them.
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

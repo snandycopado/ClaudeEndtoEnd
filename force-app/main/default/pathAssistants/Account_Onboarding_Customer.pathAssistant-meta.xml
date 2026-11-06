@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Account</entityName>
+    <fieldName>Account_Status__c</fieldName>
+    <masterLabel>Account Onboarding - Customer</masterLabel>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;Account created. Fill in the account details, then move to &lt;b&gt;Start Onboarding&lt;/b&gt;.&lt;/p&gt;</info>
+        <picklistValueName>New</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;Onboarding tasks are generated from the onboarding templates. Complete every task in the &lt;b&gt;Onboarding Tasks&lt;/b&gt; panel; the account becomes &lt;b&gt;Active&lt;/b&gt; automatically.&lt;/p&gt;</info>
+        <picklistValueName>Start Onboarding</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;All onboarding tasks are complete.&lt;/p&gt;</info>
+        <picklistValueName>Active</picklistValueName>
+    </pathAssistantSteps>
+    <pathAssistantSteps>
+        <info>&lt;p&gt;The account is no longer active.&lt;/p&gt;</info>
+        <picklistValueName>Inactive</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>Customer</recordTypeName>
+</PathAssistant>

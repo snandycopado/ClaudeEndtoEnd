@@ -1,0 +1,9 @@
+Hello {!Receiving_User.FirstName},
+
+A new onboarding task has been created for {!Onboarding_Task__c.Account__c}.
+
+Task: {!Onboarding_Task__c.Name}
+What to do: {!Onboarding_Task__c.Description__c}
+Status: {!Onboarding_Task__c.Status__c}
+
+Open the task: {!Onboarding_Task__c.Link}

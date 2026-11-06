@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Sent to the Account Owner when an onboarding task is created.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Onboarding Task Assigned</name>
+    <style>none</style>
+    <subject>New onboarding task: {!Onboarding_Task__c.Name} ({!Onboarding_Task__c.Account__c})</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

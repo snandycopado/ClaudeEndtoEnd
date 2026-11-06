@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Full access to Error Log records for support and admin users.</description>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Exception_Type__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Line_Number__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Logged_At__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Message__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Quiddity__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Record_Id__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Request_Id__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Severity__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Source_Class__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Source_Method__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.Stack_Trace__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Error_Log__c.User__c</field><readable>true</readable></fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Error Log Admin</label>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>Error_Log__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <tabSettings>
+        <tab>Error_Log__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>
