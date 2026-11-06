@@ -1,0 +1,76 @@
+<template>
+    <lightning-card title="Notify Vendors" icon-name="standard:email">
+        <div slot="actions">
+            <lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh vendor list" title="Refresh"
+                onclick={handleRefresh} disabled={isSending}></lightning-button-icon>
+        </div>
+
+        <div class="slds-var-p-horizontal_medium">
+            <p class="slds-text-body_small slds-text-color_weak slds-var-m-bottom_small">
+                Select the Internal vendor accounts to inform about this account. Each vendor receives an email with the
+                account details at its Email address.
+            </p>
+
+            <template lwc:if={isLoading}>
+                <div class="slds-is-relative slds-var-p-around_large">
+                    <lightning-spinner alternative-text="Loading vendors" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:elseif={error}>
+                <div class="slds-text-color_error slds-var-p-vertical_small" role="alert">{error}</div>
+            </template>
+
+            <template lwc:elseif={hasVendors}>
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <lightning-combobox name="notificationType" label="Notification Type" value={notificationType}
+                            options={typeOptions} onchange={handleTypeChange} disabled={isSending}
+                            required></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3">
+                        <lightning-input type="search" label="Search vendors" placeholder="Name or email"
+                            value={searchTerm} onchange={handleSearch}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-var-m-top_x-small">
+                        <lightning-textarea name="comments" label="Message (optional)" value={comments}
+                            max-length={maxComments} onchange={handleCommentsChange} disabled={isSending}
+                            placeholder="Add context for the vendors, e.g. what changed."></lightning-textarea>
+                    </div>
+                </div>
+
+                <template lwc:if={missingEmailCount}>
+                    <div class="slds-notify slds-notify_alert slds-alert_warning slds-var-m-vertical_small" role="alert">
+                        <lightning-icon icon-name="utility:warning" size="x-small" class="slds-var-m-right_x-small"></lightning-icon>
+                        {missingEmailText}
+                    </div>
+                </template>
+
+                <div class="vendor-table slds-var-m-top_small">
+                    <lightning-datatable key-field="Id" data={visibleRows} columns={columns}
+                        selected-rows={selectedIdList} onrowselection={handleRowSelection}
+                        max-row-selection={maxVendors} show-row-number-column="false"></lightning-datatable>
+                </div>
+                <template lwc:if={noMatches}>
+                    <p class="slds-text-align_center slds-text-color_weak slds-var-p-vertical_small">No vendors match "{searchTerm}".</p>
+                </template>
+
+                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-var-m-top_medium">
+                    <span class="slds-text-body_regular">{selectionLabel}</span>
+                    <lightning-button variant="brand" label={sendLabel} icon-name="utility:send"
+                        onclick={handleSend} disabled={isSendDisabled}></lightning-button>
+                </div>
+                <template lwc:if={isSending}>
+                    <lightning-spinner alternative-text="Sending notifications" size="small"></lightning-spinner>
+                </template>
+            </template>
+
+            <template lwc:else>
+                <div class="slds-text-align_center slds-var-p-vertical_medium slds-text-color_weak">
+                    No Internal vendor accounts found. Create accounts with the <strong>Internal</strong> record type
+                    and an Email address to notify them here.
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

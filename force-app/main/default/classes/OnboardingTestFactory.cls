@@ -14,7 +14,7 @@ public class OnboardingTestFactory {
         return createStandardUser(new List<String>());
     }
 
-    private static User createStandardUser(List<String> permissionSetNames) {
+    public static User createStandardUser(List<String> permissionSetNames) {
         Profile standard = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
         String unique = String.valueOf(Crypto.getRandomInteger()).replace('-', '') + System.now().getTime();
         User u = new User(
