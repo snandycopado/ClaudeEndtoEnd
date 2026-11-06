@@ -1,0 +1,38 @@
+# Owner / architect approval for frameworks, shared Account metadata, project structure, Claude and CI config.
+# The Salesforce structure is fixed (force-app/main/default), so ownership is by file name.
+
+# Trigger framework
+/force-app/main/default/classes/TriggerHandler*                @snandycopado
+/force-app/main/default/objects/Trigger_Setting__mdt/          @snandycopado
+/force-app/main/default/customPermissions/Bypass_All_Triggers* @snandycopado
+/force-app/main/default/permissionsets/Trigger_Bypass*         @snandycopado
+
+# Exception framework
+/force-app/main/default/classes/AppLogger*                     @snandycopado
+/force-app/main/default/classes/ErrorLogEvent*                 @snandycopado
+/force-app/main/default/classes/*Exception.cls*                @snandycopado
+/force-app/main/default/triggers/ErrorLogEventTrigger*         @snandycopado
+/force-app/main/default/objects/Error_Log__c/                  @snandycopado
+/force-app/main/default/objects/Error_Log_Event__e/            @snandycopado
+/force-app/main/default/permissionsets/Application_Logger*     @snandycopado
+/force-app/main/default/permissionsets/Error_Log_Admin*        @snandycopado
+
+# Integration framework (future)
+/force-app/main/default/classes/Integration*                   @snandycopado
+/force-app/main/default/namedCredentials/                      @snandycopado
+/force-app/main/default/externalCredentials/                   @snandycopado
+
+# Shared Account model and UI
+/force-app/main/default/objects/Account/recordTypes/           @snandycopado
+/force-app/main/default/objects/Account/Account.object-meta.xml @snandycopado
+/force-app/main/default/layouts/Account-*                      @snandycopado
+/force-app/main/default/flexipages/Account_Record_Page*        @snandycopado
+/force-app/main/default/classes/AccountTrigger*                @snandycopado
+/force-app/main/default/triggers/AccountTrigger*               @snandycopado
+
+# Project structure, Claude and CI
+/sfdx-project.json   @snandycopado
+/.forceignore        @snandycopado
+/.claude/            @snandycopado
+/.github/            @snandycopado
+/.mcp.json           @snandycopado

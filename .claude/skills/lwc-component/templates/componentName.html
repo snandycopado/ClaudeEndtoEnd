@@ -1,0 +1,18 @@
+<template>
+    <lightning-card title="Component Title" icon-name="standard:record">
+        <div class="slds-var-p-horizontal_medium">
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+            <template lwc:elseif={error}>
+                <div class="slds-text-color_error" role="alert">{error}</div>
+            </template>
+            <template lwc:elseif={hasItems}>
+                <!-- content -->
+            </template>
+            <template lwc:else>
+                <p class="slds-text-color_weak slds-text-align_center">Nothing to show yet.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

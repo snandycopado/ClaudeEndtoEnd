@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "salesforce": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@salesforce/mcp@0.30.15", "--orgs", "DEFAULT_TARGET_ORG"]
+    }
+  }
+}

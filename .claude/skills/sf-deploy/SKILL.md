@@ -1,0 +1,24 @@
+---
+name: sf-deploy
+description: Guarded deploy to the developer's own org only - checks the alias allowlist, refuses framework components and whole-project deploys, runs a dry run with tests, then deploys the story's components. Use when the user asks to deploy, push to the org, or validate a story.
+---
+# Guarded deploy
+
+Preconditions: the sf-code-review skill reported no Blockers, and the story plan lists the components to deploy.
+
+1. Name exactly the story's components — never the whole `force-app` or a whole metadata folder like
+   `classes/`. Prefer `--metadata`; for many components write a story manifest
+   `.claude/docs/stories/manifests/<KEY>.xml`.
+   ```
+   node .claude/skills/sf-deploy/deploy.mjs --metadata ApexClass:OnboardingService --metadata ApexClass:OnboardingServiceTest --metadata LightningComponentBundle:onboardingTaskTracker
+   node .claude/skills/sf-deploy/deploy.mjs --manifest .claude/docs/stories/manifests/ONB-012.xml
+   ```
+   - Alias = first line of `.claude/allowed-orgs` (git-ignored).
+   - Step 1 dry run with RunLocalTests (or `--tests A,B` → RunSpecifiedTests); step 2 the real deploy, only if step 1 passed.
+   - Failures print in a few lines; on failure use the `deploy-validator` subagent with the job id.
+2. Framework components (TriggerHandler, AppLogger, exception classes, Error_Log objects, Trigger_Setting__mdt,
+   Integration* classes) are refused — tell the user an architect deploys them after PR review.
+3. After a successful deploy: assign new permission sets listed in the plan
+   (`sf org assign permset --name <Name> --target-org <alias>`), smoke-test with a read-only anonymous Apex
+   script in your scratchpad, and paste the evidence into the story plan.
+4. Never destructive flags, never another alias, never `--ignore-conflicts` without asking.
