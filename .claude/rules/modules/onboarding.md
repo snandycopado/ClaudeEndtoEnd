@@ -30,7 +30,7 @@ when every task is Completed, set the Account to **Active**.
 - Account fields: Onboarding_Tasks_Total__c, Onboarding_Tasks_Completed__c (roll-ups), Onboarding_Progress__c,
   Onboarding_Completed_Date__c.
 - Permission set `Onboarding_Manager` (also record type visibility: Australia, New_Zealand, United_States, Canada,
-  Partner; Customer until KAN-2 phase 2).
+  Partner; Customer `visible=false` since KAN-2. Permission set deploys don't remove omitted entries, so revoke with visible=false).
 
 ## Behaviour
 - Restart creates only missing tasks; all complete → Active immediately.

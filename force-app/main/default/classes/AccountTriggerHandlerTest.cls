@@ -29,6 +29,30 @@ private class AccountTriggerHandlerTest {
     }
 
     @IsTest
+    static void customerRecordTypeIsInactive() {
+        Schema.RecordTypeInfo customer = accountRecordTypes().get(OnboardingTestFactory.CUSTOMER);
+        Assert.isNotNull(customer, 'Customer is kept (inactive) for existing records, not deleted');
+        Assert.isFalse(customer.isActive(), 'Customer is retired');
+    }
+
+    /**
+     * UI-level retirement: Customer is no longer offered to users. Note: Apex/API DML can still set an inactive
+     * record type (verified in esm-dev, KAN-2) — blocking that would need a validation rule (open point in the plan).
+     * isAvailable() is false for any inactive record type, so this proves the deactivation; the Onboarding_Manager
+     * visible=false entry is verified by the smoke test.
+     */
+    @IsTest
+    static void customerRecordTypeNotAvailable() {
+        System.runAs(OnboardingTestFactory.createOnboardingUser()) {
+            Map<String, Schema.RecordTypeInfo> rts = accountRecordTypes();
+            Assert.isFalse(rts.get(OnboardingTestFactory.CUSTOMER).isAvailable(), 'Onboarding_Manager users can no longer pick Customer');
+            for (String country : OnboardingTestFactory.COUNTRIES) {
+                Assert.isTrue(rts.get(country).isAvailable(), country + ' still available');
+            }
+        }
+    }
+
+    @IsTest
     static void partnerAndInternalUnchanged() {
         Map<String, Schema.RecordTypeInfo> rts = accountRecordTypes();
         Assert.isTrue(rts.get(OnboardingTestFactory.PARTNER).isActive(), 'Partner stays active');

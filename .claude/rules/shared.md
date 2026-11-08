@@ -16,7 +16,7 @@ paths:
 | `Account_Status__c` (New, Start Onboarding, Active, Inactive) | Lifecycle status on the Path | onboarding |
 | `Email__c` | Account email; vendor notification address | LCM |
 | AccountTrigger → AccountTriggerHandler | Calls module services (OnboardingService.startOnboarding) | onboarding |
-| layouts/Account-Account Layout | Onboarding section, Email, related lists Onboarding Tasks + LCM Notifications. Used by Partner, Internal, Customer | all |
+| layouts/Account-Account Layout | Onboarding section, Email, related lists Onboarding Tasks + LCM Notifications. Used by Partner, Internal, Customer (and by the country record types until an admin assigns their own layouts) | all |
 | layouts/Account-{Australia, New Zealand, United States, Canada} Account Layout | One per country record type; identical copies of Account Layout for now (KAN-2). Assignment is per profile — manual admin step, never via profile metadata | all |
 | flexipages/Account_Record_Page | Org default desktop page: Path, onboardingTaskTracker, tabs Details / LCM | all |
 | pathAssistants (Master, Customer, Partner, Internal, Australia, New_Zealand, United_States, Canada) + settings/PathAssistant | Path on Account_Status__c (one per record type) | all |

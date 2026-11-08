@@ -1,7 +1,7 @@
 /** Shared test data for the Onboarding module. */
 @IsTest
 public class OnboardingTestFactory {
-    /** Being retired by KAN-2 (deactivated in phase 2; existing records only) — new test Accounts use a country record type. */
+    /** Retired by KAN-2 (inactive; existing records only) — new test Accounts use a country record type. */
     public static final String CUSTOMER = 'Customer';
     public static final String PARTNER = 'Partner';
     /** Country record types that replace Customer (KAN-2). */

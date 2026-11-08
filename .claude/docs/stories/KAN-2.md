@@ -4,7 +4,7 @@
 |---|---|
 | Module | shared (Shared Account model); touches onboarding (`Onboarding_Manager`, task templates, `OnboardingTestFactory`) and LCM tests |
 | Branch | feature/KAN-2-account-country-record-types |
-| Status | Phase 1 deployed and verified in esm-dev (2026-11-08). Waiting for admin steps, then phase 2 |
+| Status | Phases 1 and 2 deployed and verified in esm-dev (2026-11-08). Admin profile steps still open; waiting for user verification |
 | Author | Claude (story-analyst + impact-analyzer) |
 | Source | https://suman-nandy.atlassian.net/browse/KAN-2 (Story, To Do) |
 
@@ -29,7 +29,9 @@ Jira text: "Add new record type to account. Account will have multiple record ty
 
 ## Acceptance criteria
 1. Four new active Account record types exist: `Australia`, `New_Zealand`, `United_States`, `Canada`.
-2. `Customer` is inactive. No user can create a new Customer Account. Existing Customer Accounts can still be viewed and edited.
+2. `Customer` is inactive, and users can no longer pick it in the UI. Existing Customer Accounts can still be viewed and edited.
+   *(Narrowed in build: Apex and API DML can still set the inactive record type. See R9 and the follow-up validation-rule
+   story. Needs story-owner sign-off.)*
    `Partner` and `Internal` are unchanged.
 3. A Standard User with `Onboarding_Manager` can create an Account of each country record type and of Partner, but not
    of Customer (phase 2). *(Changed in build: "a user without the permission set cannot select the country record
@@ -54,7 +56,7 @@ Jira text: "Add new record type to account. Account will have multiple record ty
 | Account.Customer | RecordType | …/recordTypes/Customer.recordType-meta.xml | Modified in place: `active` → false (phase 2) |
 | Account-Australia / New Zealand / United States / Canada Account Layout | Layout | force-app/main/default/layouts/ | New ×4 (copies; original untouched) |
 | Account_Onboarding_Australia / _New_Zealand / _United_States / _Canada | PathAssistant | force-app/main/default/pathAssistants/ | New ×4 (Customer steps). `Account_Onboarding_Customer` kept for existing records. |
-| Onboarding_Manager | PermissionSet | force-app/main/default/permissionsets/ | Modified in place: +4 country `recordTypeVisibilities` (phase 1); Customer visibility removed (phase 2) |
+| Onboarding_Manager | PermissionSet | force-app/main/default/permissionsets/ | Modified in place: +4 country `recordTypeVisibilities` (phase 1); Customer visibility set to `visible=false` (phase 2) |
 | Onboarding_Task_Template.Customer_Welcome_Call_<Country>, .Billing_Account_Setup_<Country> | CustomMetadata | force-app/main/default/customMetadata/ | New ×8 (copies of the 2 Customer templates, `Account_Record_Type__c` = country DeveloperName). Customer originals kept. |
 | OnboardingTestFactory | ApexClass (test) | classes/OnboardingTestFactory.cls | Modified: constants `AUSTRALIA`, `NEW_ZEALAND`, `UNITED_STATES`, `CANADA`; `standardTemplates()` country task |
 | OnboardingServiceTest, OnboardingTaskControllerTest, LcmNotificationServiceTest | ApexClass (test) | classes/ | Modified: `CUSTOMER` → `AUSTRALIA` (an inactive record type can't be used in DML) |
@@ -135,7 +137,7 @@ same validation. Code review confirmed that the metadata itself is correct.
 
 **Phase 2:**
 - `RecordType:Account.Customer` (`active=false`)
-- `PermissionSet:Onboarding_Manager` (Customer visibility removed)
+- `PermissionSet:Onboarding_Manager` (Customer visibility set to `visible=false`)
 - `ApexClass:AccountTriggerHandlerTest` (Customer-inactive tests enabled)
 
 **Removals (architect, not Claude):** delete the Customer record type; migrate existing Customer Accounts to country record types
@@ -154,6 +156,12 @@ once no Customer Accounts remain.
    `Billing_Account_Setup_United_States` is 35, which is OK.
 7. **Mobile:** the per-record-type layout applies; no extra work.
 8. Experience Cloud / guest: none. Integrations: none. Frameworks: none.
+9. **Inactive Customer is still assignable through Apex/API** (found in phase 2). UI users can't pick it, but data
+   loads, integrations or code could still create Customer Accounts. If this must be blocked, a validation rule is
+   needed: `ISNEW() && RecordType.DeveloperName = 'Customer'`. That is a follow-up story, not in KAN-2 scope.
+10. **Admin steps were not done before phase 2.** Until the layouts are assigned, the country record types show `Account Layout`,
+    which is identical content, so there is no visible difference yet. Profiles whose default Account record type was Customer
+    must be switched to Australia.
 
 ## Approval
 - Plan approved by: Suman Nandy on 2026-11-08 (branch stacked on feature/ESM-002-claude-folder, which is not yet on main)
@@ -176,3 +184,29 @@ once no Customer Accounts remain.
   - PathAssistant: Account Onboarding - Australia, Canada, New Zealand and United States are all active and bound to their record types.
   - Layouts in the org: Australia, Canada, New Zealand and United States Account Layout.
   - `Onboarding_Manager` description is updated.
+
+## Evidence: phase 2 (esm-dev, 2026-11-08)
+The user asked for the remaining deployment without the admin steps first. A read-only `ProfileLayout` query
+beforehand showed all 4 country record types still on `Account Layout` (System Administrator, Standard User), so the
+admin steps are not done.
+
+Changes:
+- `Customer` record type set to `active=false`.
+- `Onboarding_Manager`: Customer set to `visible=false`. Permission set deploys don't remove entries that are left
+  out of the file, so the entry stays with `visible=false` rather than being deleted.
+- New tests: `customerRecordTypeIsInactive`, `customerRecordTypeNotAvailable`.
+
+First dry run: failed 1/50. `insert as user` of an Account with the inactive Customer record type **succeeds**, so
+Apex and API DML does not enforce record type active status. The test was changed to assert `isAvailable()` only,
+and the gap is recorded as risk R9 below.
+
+Deploy: Succeeded, 4/4 components, RunLocalTests 50/50 passed.
+
+Smoke test:
+- Customer `active=false`. Australia, New Zealand, United States, Canada, Partner and Internal are active.
+- Existing Accounts by record type: Customer 1, Partner 1, Internal 3. The Customer Account keeps its record type until the architect migration.
+- Profile defaults: a read-only retrieve of the Admin and Standard profiles to the scratchpad (nothing written to the repo)
+  shows that no Account record type is visible or default on either profile. Users get record types only through
+  permission sets. So no profile defaulted to Customer, and the deactivation broke no default.
+  Making Australia the default (D7) means the admin first makes Australia visible on those profiles.
+- Code review of phase 2: 0 Blockers. Majors fixed: AC2 narrowed; profile defaults checked (above).

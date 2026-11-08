@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Customer</fullName>
-    <active>true</active>
-    <description>Customer accounts. Onboarding_Task_Template__mdt records can target this record type by DeveloperName.</description>
+    <active>false</active>
+    <description>Retired by KAN-2: replaced by the Australia, New_Zealand, United_States and Canada record types. Kept inactive for existing Customer Accounts; deletion and data migration are architect-owned.</description>
     <label>Customer</label>
     <picklistValues>
         <picklist>Account_Status__c</picklist>
