@@ -16,7 +16,9 @@ paths:
   4. Permission: run as a Standard User **with** the module permission set; where relevant also without it.
 - Users: `OnboardingTestFactory.createStandardUser(new List<String>{ '<Module_Permset>', 'Application_Logger' })`
   and `System.runAs(user) { … }`. It lives in OnboardingTestFactory today but is generic — every module uses it.
-- Accounts: `OnboardingTestFactory.newAccount(name, OnboardingTestFactory.CUSTOMER, null)` (record type constants CUSTOMER / PARTNER).
+- Accounts: `OnboardingTestFactory.newAccount(name, OnboardingTestFactory.AUSTRALIA, null)` (record type constants
+  AUSTRALIA / NEW_ZEALAND / UNITED_STATES / CANADA, list COUNTRIES, PARTNER). `CUSTOMER` is retired (inactive after
+  KAN-2) — never create test Accounts with it.
 - Read results back `WITH SYSTEM_MODE` so the assertion is not affected by the test user's FLS.
 - Update records with a fresh sObject (`new X(Id = id, Field = value)`), not one queried with read-only fields.
 - Custom Metadata cannot be inserted: set the service's `@TestVisible` override list with records built via

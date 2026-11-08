@@ -4,7 +4,7 @@
         <apexClass>OnboardingTaskController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Work Account onboarding: Account Status, onboarding progress fields, Onboarding Tasks, the tracker component and the Customer/Partner record types.</description>
+    <description>Work Account onboarding: Account Status, onboarding progress fields, Onboarding Tasks, the tracker component and the Australia/New Zealand/United States/Canada/Partner record types (Customer until KAN-2 phase 2).</description>
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.Account_Status__c</field>
@@ -86,11 +86,27 @@
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <recordTypeVisibilities>
+        <recordType>Account.Australia</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Account.Canada</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
         <recordType>Account.Customer</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
+        <recordType>Account.New_Zealand</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
         <recordType>Account.Partner</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Account.United_States</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
 </PermissionSet>

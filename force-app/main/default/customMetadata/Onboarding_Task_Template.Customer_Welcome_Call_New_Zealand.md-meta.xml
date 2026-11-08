@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Customer Welcome Call</label>
+    <protected>false</protected>
+    <values>
+        <field>Account_Record_Type__c</field>
+        <value xsi:type="xsd:string">New_Zealand</value>
+    </values>
+    <values>
+        <field>Email_Template_Name__c</field>
+        <value xsi:type="xsd:string">Onboarding_Task_Assigned</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Order__c</field>
+        <value xsi:type="xsd:double">40</value>
+    </values>
+    <values>
+        <field>Status__c</field>
+        <value xsi:type="xsd:string">Not Started</value>
+    </values>
+    <values>
+        <field>Task_Description__c</field>
+        <value xsi:type="xsd:string">Schedule and hold the welcome call with the customer's main contact.</value>
+    </values>
+</CustomMetadata>

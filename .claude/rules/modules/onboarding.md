@@ -22,12 +22,15 @@ when every task is Completed, set the Account to **Active**.
 
 ## Key objects
 - `Onboarding_Task_Template__mdt` — Task Description, Order, Account Record Type (DeveloperName; blank = all),
-  Status (initial), Email Template Name, Is Active; Label = task name. 6 records.
+  Status (initial), Email Template Name, Is Active; Label = task name. 14 records: the 2 Customer templates
+  (Customer_Welcome_Call, Billing_Account_Setup) are copied per country as `<Template>_<Country RT>` (KAN-2);
+  the Customer originals stay for existing Customer Accounts.
 - `Onboarding_Task__c` (master-detail to Account) — Status (Not Started / In Progress / Completed), Order,
   Description, Template_Key__c (prevents duplicates on restart), Completed_Date__c, Completed_By__c.
 - Account fields: Onboarding_Tasks_Total__c, Onboarding_Tasks_Completed__c (roll-ups), Onboarding_Progress__c,
   Onboarding_Completed_Date__c.
-- Permission set `Onboarding_Manager` (also Customer/Partner record type visibility).
+- Permission set `Onboarding_Manager` (also record type visibility: Australia, New_Zealand, United_States, Canada,
+  Partner; Customer until KAN-2 phase 2).
 
 ## Behaviour
 - Restart creates only missing tasks; all complete → Active immediately.

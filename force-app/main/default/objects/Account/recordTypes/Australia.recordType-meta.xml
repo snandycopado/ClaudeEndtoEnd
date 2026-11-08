@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Australia</fullName>
+    <active>true</active>
+    <description>Customer accounts in Australia (replaces Customer, KAN-2). Onboarding_Task_Template__mdt records can target this record type by DeveloperName.</description>
+    <label>Australia</label>
+    <picklistValues>
+        <picklist>Account_Status__c</picklist>
+        <values><fullName>New</fullName><default>true</default></values>
+        <values><fullName>Start Onboarding</fullName><default>false</default></values>
+        <values><fullName>Active</fullName><default>false</default></values>
+        <values><fullName>Inactive</fullName><default>false</default></values>
+    </picklistValues>
+</RecordType>

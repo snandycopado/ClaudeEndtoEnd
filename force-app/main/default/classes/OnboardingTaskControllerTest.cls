@@ -1,7 +1,7 @@
 @IsTest
 private class OnboardingTaskControllerTest {
     private static Account startOnboarding() {
-        Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+        Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
         insert acc;
         return acc;
     }

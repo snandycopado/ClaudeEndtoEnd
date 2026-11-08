@@ -1,8 +1,15 @@
 /** Shared test data for the Onboarding module. */
 @IsTest
 public class OnboardingTestFactory {
+    /** Being retired by KAN-2 (deactivated in phase 2; existing records only) — new test Accounts use a country record type. */
     public static final String CUSTOMER = 'Customer';
     public static final String PARTNER = 'Partner';
+    /** Country record types that replace Customer (KAN-2). */
+    public static final String AUSTRALIA = 'Australia';
+    public static final String NEW_ZEALAND = 'New_Zealand';
+    public static final String UNITED_STATES = 'United_States';
+    public static final String CANADA = 'Canada';
+    public static final List<String> COUNTRIES = new List<String>{ AUSTRALIA, NEW_ZEALAND, UNITED_STATES, CANADA };
 
     /** Standard User with Onboarding_Manager + Application_Logger — the realistic persona. */
     public static User createOnboardingUser() {
@@ -72,11 +79,11 @@ public class OnboardingTestFactory {
         return (Onboarding_Task_Template__mdt) JSON.deserialize(JSON.serialize(fields), Onboarding_Task_Template__mdt.class);
     }
 
-    /** ALL (10), CUSTOMER (20), PARTNER (30) and an inactive one (40). */
+    /** ALL (10), customer task for AUSTRALIA (20), PARTNER (30) and an inactive one (40). */
     public static List<Onboarding_Task_Template__mdt> standardTemplates() {
         return new List<Onboarding_Task_Template__mdt>{
             template('All_Accounts_Task', 10, null, true, null),
-            template('Customer_Task', 20, CUSTOMER, true, null),
+            template('Customer_Task', 20, AUSTRALIA, true, null),
             template('Partner_Task', 30, PARTNER, true, null),
             template('Inactive_Task', 40, null, false, null)
         };
