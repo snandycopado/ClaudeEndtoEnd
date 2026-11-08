@@ -37,6 +37,7 @@ Module knowledge is in `.claude/rules/` and loads automatically when you open ma
 - Configuration over code: Custom Metadata for switches and mappings.
 
 ## How you work (every user story)
+Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start-story.md).
 1. Read the story. Write an impact plan to `.claude/docs/stories/<KEY>.md` (skill: story-to-plan). STOP for approval.
 2. Branch `feature/<KEY>-short-name` from `develop` (from `main` until `develop` exists). Never commit to
    main or develop — a hook blocks it.

@@ -4,8 +4,8 @@ description: Turn a user story (e.g. "Implement ONB-012") into an impact plan at
 ---
 # Story to impact plan
 
-1. Get the story key, title, description and acceptance criteria. If the user only gave a key and no MCP
-   tracker is configured, ask them to paste the story.
+1. Get the story key, title, description and acceptance criteria. If only a key or link was given, read it
+   from Jira via the Atlassian MCP (`getJiraIssue`); if that is unavailable, ask the user to paste the story.
 2. Delegate the analysis to the `story-analyst` subagent (and `impact-analyzer` if shared Account metadata, a framework or an
    integration is touched). Give it the story text.
 3. Write the result to `.claude/docs/stories/<KEY>.md` using `plan-template.md` in this folder. Keep every section;
