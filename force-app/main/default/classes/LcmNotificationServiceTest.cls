@@ -27,7 +27,7 @@ private class LcmNotificationServiceTest {
         System.runAs(lcmUser()) {
             Account current = vendor('Vendor Current', 'current@example.com');
             Account other = vendor('Vendor Other', 'other@example.com');
-            Account customer = OnboardingTestFactory.newAccount('Customer Co', OnboardingTestFactory.CUSTOMER, null);
+            Account customer = OnboardingTestFactory.newAccount('Customer Co', OnboardingTestFactory.AUSTRALIA, null);
             insert new List<Account>{ current, other, customer };
 
             List<Account> result = LcmNotificationController.getInternalAccounts(current.Id);
@@ -40,7 +40,7 @@ private class LcmNotificationServiceTest {
     @IsTest
     static void sendsToVendorsWithEmailAndAuditsEveryOutcome() {
         System.runAs(lcmUser()) {
-            Account subject = OnboardingTestFactory.newAccount('Acme Corp', OnboardingTestFactory.CUSTOMER, null);
+            Account subject = OnboardingTestFactory.newAccount('Acme Corp', OnboardingTestFactory.AUSTRALIA, null);
             Account a = vendor('Vendor A', 'a@example.com');
             Account b = vendor('Vendor B', 'b@example.com');
             Account noEmail = vendor('Vendor C', null);
@@ -77,8 +77,8 @@ private class LcmNotificationServiceTest {
     @IsTest
     static void nonInternalSelectionIsSkipped() {
         System.runAs(lcmUser()) {
-            Account subject = OnboardingTestFactory.newAccount('Acme Corp', OnboardingTestFactory.CUSTOMER, null);
-            Account notVendor = OnboardingTestFactory.newAccount('Customer Co', OnboardingTestFactory.CUSTOMER, null);
+            Account subject = OnboardingTestFactory.newAccount('Acme Corp', OnboardingTestFactory.AUSTRALIA, null);
+            Account notVendor = OnboardingTestFactory.newAccount('Customer Co', OnboardingTestFactory.AUSTRALIA, null);
             Account a = vendor('Vendor A', 'a@example.com');
             insert new List<Account>{ subject, notVendor, a };
 
@@ -97,7 +97,7 @@ private class LcmNotificationServiceTest {
     @IsTest
     static void validationErrorsReachTheUserUnchanged() {
         System.runAs(lcmUser()) {
-            Account subject = OnboardingTestFactory.newAccount('Acme Corp', OnboardingTestFactory.CUSTOMER, null);
+            Account subject = OnboardingTestFactory.newAccount('Acme Corp', OnboardingTestFactory.AUSTRALIA, null);
             Account a = vendor('Vendor A', 'a@example.com');
             insert new List<Account>{ subject, a };
 
@@ -134,7 +134,7 @@ private class LcmNotificationServiceTest {
     @IsTest
     static void emailBodyContainsDetailsAndEscapesInput() {
         System.runAs(lcmUser()) {
-            Account subject = OnboardingTestFactory.newAccount('Acme <Corp>', OnboardingTestFactory.CUSTOMER, null);
+            Account subject = OnboardingTestFactory.newAccount('Acme <Corp>', OnboardingTestFactory.AUSTRALIA, null);
             subject.Industry = 'Banking';
             subject.Phone = '555-0100';
             insert subject;
