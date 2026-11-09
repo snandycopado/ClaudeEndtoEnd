@@ -34,16 +34,20 @@ Input: `$ARGUMENTS`
 - Run the **story-to-plan** skill with the story text from Jira. It writes
   `.claude/docs/stories/<KEY>.md` and ends with "Approve this plan?". Wait for explicit approval.
 
-## 6. Build (after approval only)
+## 6. Build (after approval only) — no questions from here on
+Ask every open question in step 5, before approval. After approval, run straight through to the PR. Stop only for
+a real blocker (a deploy or test failure you can't fix, a hook block, or a scope change). Record deviations in the
+plan's evidence section and in the PR instead of asking.
 Follow "How you work" steps 2-7 in `.claude/CLAUDE.md`:
 1. Branch `feature/<KEY>-<short-kebab-name>` from `develop` (from `main` until `develop` exists).
 2. Build; tests via the **apex-test** skill / `apex-test-writer` agent (90%+, bulk 200, negative, permission).
 3. **sf-code-review** skill - fix every Blocker.
 4. **sf-deploy** skill - dry run, then deploy the story's components only.
 5. Smoke test; record evidence in the plan; update the module rule file.
-6. **pr-description** skill. Ask before `git push` and before opening the PR.
+6. **pr-description** skill → `git push -u origin <branch>` → `gh pr create`. The PR is the approval point.
+   List manual admin steps (profiles, permission set assignment) in the PR.
 
-## 7. Jira updates - only with permission
-Never write to Jira without asking. Offer at these points:
-- After plan approval: "Move <KEY> to In Progress and comment with the plan and branch name?"
-- After the PR is open: "Comment the PR link on <KEY>?"
+## 7. Jira updates
+- When the plan is approved, move <KEY> to In Progress and comment with the decisions and the branch name.
+- When the PR is open, comment the PR link on <KEY>.
+- Never put org IDs, usernames or credentials in Jira comments.

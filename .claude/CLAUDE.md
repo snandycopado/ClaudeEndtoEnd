@@ -46,7 +46,11 @@ Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start
 4. sf-code-review skill (code-reviewer subagent). Fix every Blocker.
 5. sf-deploy skill: dry run, then deploy the story's components to the alias in `.claude/allowed-orgs`.
 6. Smoke-test in the org and record the evidence in the plan. Update the module rule file in the same change.
-7. pr-description skill → push the branch, open a PR. Ask before pushing.
+7. pr-description skill → push the branch, open a PR. The PR is the approval point.
+
+**After the plan is approved, do not ask questions.** Run steps 2–7 end to end. Stop only for a real blocker (a deploy
+or test failure you cannot fix, a hook block, or a change of scope). Record deviations in the plan and the PR.
+Questions belong in planning, before "Approve this plan?".
 
 ## Never
 - Change the project structure: sfdx-project.json, .forceignore, folders under force-app/ (hook-enforced).

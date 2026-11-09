@@ -10,5 +10,6 @@ description: Write the pull request description from the story plan and the bran
 4. Test evidence must be real output from this branch: deploy job id, tests passed/failed, coverage of the
    changed classes, and the smoke-test result.
 5. End the description with: `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
-6. Show the text to the user. Ask before running `git push -u origin <branch>` and
-   `gh pr create --base develop --title "<KEY>: <title>" --body-file <file>` (base `main` until develop exists).
+6. Once the plan is approved and the story is verified, push and open the PR without asking:
+   `git push -u origin <branch>` and `gh pr create --base develop --title "<KEY>: <title>" --body-file <file>`
+   (base `main` until develop exists). The PR is the approval point. Show the PR link to the user.
