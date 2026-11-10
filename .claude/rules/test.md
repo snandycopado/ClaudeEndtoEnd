@@ -4,7 +4,11 @@ paths:
   - "**/*TestFactory.cls"
   - "**/*TestFactory*.cls"
 ---
+
 # Apex test rules
+
+> Story workflow: Claude does not run tests and writes Apex tests only when a story adds production Apex with no
+> test class (CLAUDE.md step 3). The developer runs the tests and adds any needed. When tests are written, these rules apply.
 
 - One test class per class under test: `<Class>Test`, `@IsTest private class`.
 - 90%+ coverage on every changed class; the org minimum is 75% but coverage is never the goal — behaviour is.

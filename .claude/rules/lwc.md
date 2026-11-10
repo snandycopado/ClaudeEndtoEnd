@@ -2,6 +2,7 @@
 paths:
   - "**/lwc/**"
 ---
+
 # LWC rules
 
 - Lightning Data Service first (`getRecord`, `lightning-record-form`, `updateRecord`); Apex only when LDS
@@ -17,4 +18,5 @@ paths:
   `alternative-text`.
 - Reactivity: replace Sets/arrays (`this.ids = new Set([...this.ids, id])`), don't mutate in place.
 - Expose on `lightning__RecordPage` with a `targetConfig` listing the objects; set `masterLabel` and `description`.
-- New components get a Jest test in `__tests__/` (`npm run test:unit`).
+- Jest tests in `__tests__/` (`npm run test:unit`) are written and run by the developer, not by Claude, unless the
+  user asks. Claude lists suggested test cases in the plan's Low Level Design.
