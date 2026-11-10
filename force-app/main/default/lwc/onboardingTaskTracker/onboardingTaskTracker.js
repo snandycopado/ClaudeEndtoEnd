@@ -171,9 +171,8 @@ export default class OnboardingTaskTracker extends NavigationMixin(
         completedBy: t.Completed_By__r?.Name,
         checkboxLabel: `Mark ${t.Name} as completed`,
         badgeClass: BADGE[t.Status__c] || "slds-badge",
-        nameClass: isCompleted
-          ? "slds-text-heading_small task-done"
-          : "slds-text-heading_small"
+        // KAN-4: completed tasks are not struck through; the badge, checkbox and "Completed by" line show the status.
+        nameClass: "slds-text-heading_small"
       };
     });
   }
