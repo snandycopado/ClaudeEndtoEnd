@@ -14,6 +14,8 @@ description: Turn a user story (e.g. "Implement ONB-012") into an impact plan at
    manual steps). Keep every section; write "None" rather than deleting one. List open questions in the summary.
    Do not plan Jest tests or test runs; list suggested test cases for the developer in the Low Level Design.
 4. Branch name goes in the plan: `feature/<KEY>-<short-kebab-name>`.
-5. STOP. Show the plan summary (files to change, risks, open questions) and ask:
-   "Approve this plan?" Do not create the branch or edit any metadata until the user approves.
+5. STOP. Show the plan summary (files to change, risks, open questions with recommendations) and ask with the
+   AskUserQuestion buttons **"Approve"** / **"Need improvement"** (see `.claude/commands/start-story.md` step 5).
+   On "Need improvement", get the text, revise the plan and ask again. Do not create the branch or edit any
+   metadata until the user clicks Approve.
 6. After approval, record it in the plan's Approval section (who/when) and continue with the build.

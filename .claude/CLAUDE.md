@@ -44,7 +44,8 @@ Module knowledge is in `.claude/rules/` and loads automatically when you open ma
 Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start-story.md).
 
 1. Read the story. Write the plan to `.claude/docs/stories/<KEY>.md` (skill: story-to-plan) with four sections:
-   Story Description, High Level Design, Low Level Design, Deployment Tracker (with manual steps). STOP for approval.
+   Story Description, High Level Design, Low Level Design, Deployment Tracker (with manual steps). STOP for approval
+   with the buttons **Approve / Need improvement** (AskUserQuestion), never a plain-text question.
 2. Branch `feature/<KEY>-short-name` from `develop` (from `main` until `develop` exists). Never commit to
    main or develop — a hook blocks it.
 3. Build — fast. **Do not write Jest tests and do not run any tests** (Jest or Apex). The developer reviews the
@@ -55,9 +56,12 @@ Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start
 5. sf-deploy skill: deploy the story's components to the alias in `.claude/allowed-orgs` **without asking**
    (no tests run: `NoTestRun`). Record the job id in the Deployment Tracker.
 6. Update the Deployment Tracker (manual steps, status) and the module rule file in the same change.
-7. pr-description skill → push the branch, open a PR. The PR is the approval point.
+7. pr-description skill → push the branch, open a PR.
+8. Ask the user to verify in esm-dev with the buttons **Feature working fine / Need improvement**. Need improvement →
+   get the text, fix, redeploy, ask again. Feature working fine → merge the PR, set Jira to Done, update the plan, and
+   end with "✅ Process completed. Ready for the next story." (details: .claude/commands/start-story.md step 7).
 
-**After the plan is approved, do not ask questions.** Run steps 2–7 end to end. Stop only for a real blocker (a deploy
+**After the plan is approved, do not ask questions** until the Verify buttons in step 8. Run steps 2–7 end to end. Stop only for a real blocker (a deploy
 failure you cannot fix, a hook block, or a change of scope) or a **destructive change**. Record deviations in the plan
 and the PR. Questions belong in planning, before "Approve this plan?".
 

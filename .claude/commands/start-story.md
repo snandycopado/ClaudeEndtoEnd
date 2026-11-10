@@ -37,8 +37,14 @@ Input: `$ARGUMENTS`
 
 ## 5. Plan - STOP for approval
 
-- Run the **story-to-plan** skill with the story text from Jira. It writes
-  `.claude/docs/stories/<KEY>.md` and ends with "Approve this plan?". Wait for explicit approval.
+- Run the **story-to-plan** skill with the story text from Jira. It writes `.claude/docs/stories/<KEY>.md`.
+- Show the plan summary, then ask for approval **with buttons** (the AskUserQuestion tool), never as a plain-text question:
+  - question: "Approve the plan for <KEY>?" · header: "Plan"
+  - options: **"Approve"** ("Build, deploy to esm-dev and open the PR without further questions") and
+    **"Need improvement"** ("Tell me what to change in the plan").
+  - Put the open questions with your recommendations in the summary; "Approve" means the recommendations are accepted.
+- **Need improvement** (or text typed in "Other"/notes): if no text came with it, ask "What should be improved?" and
+  wait. Update the plan, show what changed, and ask the same two buttons again. Repeat until **Approve**.
 
 ## 6. Build (after approval only) — no questions from here on
 
@@ -56,8 +62,30 @@ Follow "How you work" steps 2-7 in `.claude/CLAUDE.md`:
 6. **pr-description** skill → `git push -u origin <branch>` → `gh pr create`. The PR is the approval point.
    List the manual steps and "tests: developer to run" in the PR.
 
-## 7. Jira updates
+## 7. Verify the feature: buttons
+
+When the PR is open, say clearly what was deployed and how to verify it in esm-dev (steps, the record to open,
+and the hard-refresh tip for LWC changes). Then ask **with buttons** (AskUserQuestion):
+
+- question: "Please verify <KEY> in esm-dev. Is the feature working?" · header: "Verify"
+- options: **"Feature working fine"** ("Merge the PR, set Jira to Done and close the story") and
+  **"Need improvement"** ("Tell me what to fix").
+
+**Need improvement:** if no text came with it, ask "What should be improved?" and wait. Fix it on the same branch
+(no new plan approval unless the scope changes), deploy (NoTestRun), push, comment on the PR, update the Deployment
+Tracker, then ask the **Verify** buttons again.
+
+**Feature working fine:** close the story without further questions:
+
+1. Merge the PR: `gh pr merge <number> --merge` (keep the branch; stacked PRs depend on it). If the PR is stacked
+   on another feature branch, say that it merged into that branch and reaches `main` when the base PR merges.
+2. Jira: move <KEY> to **Done** and comment with the PR link and "Verified by <user> on <date>".
+3. Plan: set Status to "Verified and merged" and record the verification in the Deployment Tracker; commit and push.
+4. End with exactly this line on its own: **✅ Process completed. Ready for the next story.**
+
+## 8. Jira updates
 
 - When the plan is approved, move <KEY> to In Progress and comment with the decisions and the branch name.
 - When the PR is open, comment the PR link on <KEY>.
+- When the feature is verified, move <KEY> to Done (step 7).
 - Never put org IDs, usernames or credentials in Jira comments.
