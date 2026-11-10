@@ -5,7 +5,7 @@
 | Jira   | https://suman-nandy.atlassian.net/browse/KAN-4 (Story, To Do). The description is a screenshot only, which can't be read through the connector |
 | Module | onboarding (LWC `onboardingTaskTracker`)                                                                                                       |
 | Branch | feature/KAN-4-completed-task-no-strikethrough, stacked on `feature/KAN-3-onboarding-task-detail-link` (same CSS and markup)                    |
-| Status | Deployed to dev org (2026-11-10). PR open                                                                                                      |
+| Status | Verified and merged (2026-11-10). Jira: Done                                                                                                   |
 | Author | Claude                                                                                                                                         |
 
 ## 1. Story Description
@@ -59,12 +59,13 @@ No HTML change: the name `<p class={row.nameClass}>` and its link stay as they a
 
 ## 4. Deployment Tracker
 
-| #   | Step                     | Components / action                                               | Who       | Status  | Evidence                                                                                                                          |
-| --- | ------------------------ | ----------------------------------------------------------------- | --------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Code review (one pass)   | code-reviewer subagent                                            | Claude    | Done    | 0 Blockers, 0 Majors. Minor: `nameClass` is now a constant (left as it is). The existing Jest suite doesn't reference `task-done` |
-| 2   | Deploy to dev org        | `LightningComponentBundle:onboardingTaskTracker` (NoTestRun)      | Claude    | Done    | Succeeded 1/1, job `0Afbm00000nUrM2CAK`                                                                                           |
-| 3   | Developer review + tests | review the CSS and JS change, run Jest, check the card in esm-dev | Developer | Pending |                                                                                                                                   |
-| 4   | Pull request             | PR to `feature/KAN-3-onboarding-task-detail-link`                 | Claude    | Done    | see Jira comment                                                                                                                  |
+| #   | Step                     | Components / action                                               | Who         | Status  | Evidence                                                                                                                          |
+| --- | ------------------------ | ----------------------------------------------------------------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Code review (one pass)   | code-reviewer subagent                                            | Claude      | Done    | 0 Blockers, 0 Majors. Minor: `nameClass` is now a constant (left as it is). The existing Jest suite doesn't reference `task-done` |
+| 2   | Deploy to dev org        | `LightningComponentBundle:onboardingTaskTracker` (NoTestRun)      | Claude      | Done    | Succeeded 1/1, job `0Afbm00000nUrM2CAK`                                                                                           |
+| 3   | Developer review + tests | review the CSS and JS change, run Jest, check the card in esm-dev | Developer   | Pending |                                                                                                                                   |
+| 4   | Pull request             | PR #4 to `feature/KAN-3-onboarding-task-detail-link`              | Claude      | Merged  | merged 2026-11-10                                                                                                                 |
+| 5   | Verification             | "Feature working fine" in esm-dev                                 | Suman Nandy | Done    | 2026-11-10; Jira KAN-4 → Done                                                                                                     |
 
 Deviation: this branch was cut from KAN-3, before the new deploy script, so the deploy ran `sf project deploy start`
 directly with `--test-level NoTestRun` to esm-dev (the same guard hook applies) instead of `deploy.mjs`.
