@@ -1,9 +1,15 @@
 .task-row {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .task-done {
-    text-decoration: line-through;
-    color: var(--slds-g-color-neutral-base-50, #747474);
+  text-decoration: line-through;
+  color: var(--slds-g-color-neutral-base-50, #747474);
+}
+
+/* Completed tasks keep the strike-through and muted colour on their link (KAN-3). */
+.task-done .task-link {
+  text-decoration: line-through;
+  color: inherit;
 }
