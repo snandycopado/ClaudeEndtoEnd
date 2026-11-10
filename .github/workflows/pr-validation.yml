@@ -1,0 +1,96 @@
+name: PR validation
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  guards:
+    name: Deletions, destructiveChanges, guard hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: No deleted metadata (unless architect-approved)
+        env:
+          APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'architect-approved-deletion') }}
+        run: bash .github/scripts/check-deleted-metadata.sh "origin/${{ github.base_ref }}"
+      - name: No destructiveChanges files
+        run: bash .github/scripts/check-destructive-changes.sh "origin/${{ github.base_ref }}"
+      - name: Guard hooks still block destructive commands
+        run: |
+          printf 'esm-dev\n' > .claude/allowed-orgs
+          node .claude/hooks/tests/run-guard-tests.mjs
+
+  code-analyzer:
+    name: Salesforce Code Analyzer (fail on severity 1-2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Salesforce CLI + Code Analyzer
+        run: |
+          npm install --global @salesforce/cli
+          sf plugins install code-analyzer
+      - name: Run Code Analyzer
+        run: >
+          sf code-analyzer run
+          --config-file .claude/skills/sf-code-review/code-analyzer-config.yml
+          --workspace .
+          --target force-app
+          --severity-threshold 2
+          --view table
+          --output-file code-analyzer-results.html
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: code-analyzer-results
+          path: code-analyzer-results.html
+
+  validate-deploy:
+    name: Check-only deploy with RunLocalTests
+    runs-on: ubuntu-latest
+    env:
+      SF_AUTH_URL: ${{ secrets.SF_VALIDATION_AUTH_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip when no validation org is configured
+        if: env.SF_AUTH_URL == ''
+        run: echo "::notice::Secret SF_VALIDATION_AUTH_URL is not set — check-only deploy skipped until a QA/validation org is configured."
+      - uses: actions/setup-node@v4
+        if: env.SF_AUTH_URL != ''
+        with:
+          node-version: 20
+      - name: Install Salesforce CLI
+        if: env.SF_AUTH_URL != ''
+        run: npm install --global @salesforce/cli
+      - name: Authenticate the validation org (pipeline service user)
+        if: env.SF_AUTH_URL != ''
+        run: |
+          printf '%s' "$SF_AUTH_URL" > "$RUNNER_TEMP/auth.txt"
+          sf org login sfdx-url --sfdx-url-file "$RUNNER_TEMP/auth.txt" --alias validation
+          rm -f "$RUNNER_TEMP/auth.txt"
+      - name: Validate (no changes are saved)
+        if: env.SF_AUTH_URL != ''
+        run: sf project deploy validate --source-dir force-app --target-org validation --test-level RunLocalTests --coverage-formatters text --wait 60
