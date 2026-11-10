@@ -1,6 +1,6 @@
 ---
 name: sf-deploy
-description: Guarded deploy to the developer's own org only - checks the alias allowlist, refuses framework components and whole-project deploys, runs a dry run with tests, then deploys the story's components. Use when the user asks to deploy, push to the org, or validate a story.
+description: Guarded deploy to the developer's own org only - checks the alias allowlist, refuses framework components and whole-project deploys, then deploys the story's components with NoTestRun (dry run and tests only on request). Use when the user asks to deploy, push to the org, or validate a story.
 ---
 
 # Guarded deploy
