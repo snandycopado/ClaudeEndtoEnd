@@ -21,8 +21,9 @@ when every task is Completed, set the Account to **Active**.
   `OnboardingTaskController.getTasks / completeTask`. Each task name is a link (KAN-3): `NavigationMixin`
   `standard__recordPage` to the Onboarding_Task__c record (href from `GenerateUrl`, `#` until resolved; modifier-click
   → new tab). The list reloads when Account status or the task roll-ups change (getRecord `optionalFields`).
-  Completed tasks are **not** struck through (KAN-4): status shows via the green badge, the disabled checkbox and the
-  "Completed by … on …" line.
+  Completed tasks are **not** struck through (KAN-4): status shows via the green badge, the ticked checkbox and the
+  "Completed by … on …" line. The checkbox is a toggle (KAN-6): untick → `OnboardingTaskController.reopenTask`
+  (Status = In Progress, `update as user`); the trigger clears Completed Date/By.
 - Onboarding Task record page = `Onboarding_Task__c-Onboarding Task Layout` (in source since KAN-3, edit in place):
   task fields read-only, Edit/Delete/Clone excluded. **UI-only control**: `Onboarding_Manager` still grants edit/delete
   on the object (completeTask needs `update as user`), so list views, API and Flows can still change or delete tasks.
@@ -46,6 +47,11 @@ when every task is Completed, set the Account to **Active**.
 ## Behaviour
 
 - Restart creates only missing tasks; all complete → Active immediately.
+- Reopening a task on an Account that onboarding activated (Onboarding_Completed_Date__c set) sets it back to
+  Start Onboarding and clears the completed date (KAN-6, `evaluateCompletion`). Other Active Accounts are untouched.
+  The same happens when an open task is added or undeleted on such an Account. An Account with no tasks left
+  (all deleted) is not reverted. Re-entering Start Onboarding runs `startOnboarding`, which only creates missing
+  tasks; tasks for templates added since the first run are created **and emailed**.
 - No matching templates → no tasks, stays in Start Onboarding, WARN logged.
 - `OnboardingService` is `without sharing` on purpose (automation must finish regardless of Account access).
 - Email failures never block onboarding — logged.
