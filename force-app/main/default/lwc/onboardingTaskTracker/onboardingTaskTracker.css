@@ -1,9 +1,4 @@
 .task-row {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-}
-
-.task-done {
-    text-decoration: line-through;
-    color: var(--slds-g-color-neutral-base-50, #747474);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
