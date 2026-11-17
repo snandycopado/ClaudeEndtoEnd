@@ -9,6 +9,7 @@ import {
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import getTasks from "@salesforce/apex/OnboardingTaskController.getTasks";
 import completeTask from "@salesforce/apex/OnboardingTaskController.completeTask";
+import reopenTask from "@salesforce/apex/OnboardingTaskController.reopenTask";
 import ACCOUNT_STATUS_FIELD from "@salesforce/schema/Account.Account_Status__c";
 import TASKS_COMPLETED_FIELD from "@salesforce/schema/Account.Onboarding_Tasks_Completed__c";
 import TASKS_TOTAL_FIELD from "@salesforce/schema/Account.Onboarding_Tasks_Total__c";
@@ -166,10 +167,13 @@ export default class OnboardingTaskTracker extends NavigationMixin(
         description: t.Description__c,
         status: t.Status__c,
         isCompleted,
-        isDisabled: isCompleted || this.savingIds.has(t.Id),
+        // KAN-6: completed tasks can be unticked (reopened); only an in-flight save disables the box.
+        isDisabled: this.savingIds.has(t.Id),
         completedDate: t.Completed_Date__c,
         completedBy: t.Completed_By__r?.Name,
-        checkboxLabel: `Mark ${t.Name} as completed`,
+        checkboxLabel: isCompleted
+          ? `Mark ${t.Name} as in progress`
+          : `Mark ${t.Name} as completed`,
         badgeClass: BADGE[t.Status__c] || "slds-badge",
         // KAN-4: completed tasks are not struck through; the badge, checkbox and "Completed by" line show the status.
         nameClass: "slds-text-heading_small"
@@ -227,29 +231,44 @@ export default class OnboardingTaskTracker extends NavigationMixin(
   async handleComplete(event) {
     const checkbox = event.target;
     const taskId = checkbox.dataset.id;
-    if (!checkbox.checked) return; // completed tasks are locked; nothing to undo
+    // Ticked -> complete the task; unticked -> reopen it as In Progress (KAN-6).
+    const completing = checkbox.checked;
 
     this.savingIds = new Set([...this.savingIds, taskId]);
     try {
-      await completeTask({ taskId });
+      if (completing) {
+        await completeTask({ taskId });
+      } else {
+        await reopenTask({ taskId });
+      }
       await refreshApex(this.wiredTasksResult);
-      // Refresh Path, highlights and detail panel (status may now be Active).
+      // Refresh Path, highlights and detail panel (status may now be Active, or back to Start Onboarding).
       await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
       this.dispatchEvent(
-        new ShowToastEvent({
-          title: "Task completed",
-          message:
-            this.completedCount === this.totalCount
-              ? "All onboarding tasks are complete. The account is now Active."
-              : this.progressLabel,
-          variant: "success"
-        })
+        new ShowToastEvent(
+          completing
+            ? {
+                title: "Task completed",
+                message:
+                  this.completedCount === this.totalCount
+                    ? "All onboarding tasks are complete. The account is now Active."
+                    : this.progressLabel,
+                variant: "success"
+              }
+            : {
+                title: "Task reopened",
+                message: `The task is In Progress again. ${this.progressLabel}.`,
+                variant: "success"
+              }
+        )
       );
     } catch (error) {
-      checkbox.checked = false;
+      checkbox.checked = !completing;
       this.dispatchEvent(
         new ShowToastEvent({
-          title: "Could not complete task",
+          title: completing
+            ? "Could not complete task"
+            : "Could not reopen task",
           message: reduceError(error),
           variant: "error"
         })
