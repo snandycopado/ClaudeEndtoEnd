@@ -7,6 +7,7 @@ import {
   notifyRecordUpdateAvailable
 } from "lightning/uiRecordApi";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
+import LightningConfirm from "lightning/confirm";
 import getTasks from "@salesforce/apex/OnboardingTaskController.getTasks";
 import completeTask from "@salesforce/apex/OnboardingTaskController.completeTask";
 import reopenTask from "@salesforce/apex/OnboardingTaskController.reopenTask";
@@ -228,13 +229,68 @@ export default class OnboardingTaskTracker extends NavigationMixin(
 
   // ------------------------------------------------------------------ actions
 
+  isTaskCompleted(taskId) {
+    return this.tasks.find((t) => t.Id === taskId)?.Status__c === COMPLETED;
+  }
+
+  releaseTask(taskId) {
+    const next = new Set(this.savingIds);
+    next.delete(taskId);
+    this.savingIds = next;
+  }
+
+  /** KAN-7: standard Salesforce confirmation dialog. Resolves true only when the user clicks OK. */
+  async confirmComplete(taskId) {
+    const task = this.tasks.find((t) => t.Id === taskId);
+    const name = task ? task.Name : "this task";
+    const isLastOpen = this.totalCount - this.completedCount === 1;
+    const result = await LightningConfirm.open({
+      label: "Complete task",
+      message:
+        `Complete "${name}"?` +
+        (isLastOpen
+          ? " This is the last open task. The account will become Active."
+          : ""),
+      theme: "default"
+    });
+    return result === true;
+  }
+
   async handleComplete(event) {
     const checkbox = event.target;
     const taskId = checkbox.dataset.id;
     // Ticked -> complete the task; unticked -> reopen it as In Progress (KAN-6).
     const completing = checkbox.checked;
-
+    // Re-entrancy guard: a second change (fast double-click) while the dialog opens or a save runs is ignored.
+    if (this.savingIds.has(taskId)) {
+      return;
+    }
+    // Disable the box from now on: covers the confirmation dialog and the save.
     this.savingIds = new Set([...this.savingIds, taskId]);
+
+    // KAN-7: completing asks for confirmation first; Cancel/Esc saves nothing. Reopening needs no confirmation.
+    let confirmed = true;
+    if (completing) {
+      try {
+        confirmed = await this.confirmComplete(taskId);
+      } catch (error) {
+        confirmed = false;
+        this.dispatchEvent(
+          new ShowToastEvent({
+            title: "Could not open the confirmation",
+            message: reduceError(error),
+            variant: "error"
+          })
+        );
+      }
+    }
+    if (!confirmed) {
+      // Show the task's current state (it may have been completed elsewhere while the dialog was open).
+      checkbox.checked = this.isTaskCompleted(taskId);
+      this.releaseTask(taskId);
+      return;
+    }
+
     try {
       if (completing) {
         await completeTask({ taskId });
