@@ -23,7 +23,9 @@ when every task is Completed, set the Account to **Active**.
   → new tab). The list reloads when Account status or the task roll-ups change (getRecord `optionalFields`).
   Completed tasks are **not** struck through (KAN-4): status shows via the green badge, the ticked checkbox and the
   "Completed by … on …" line. The checkbox is a toggle (KAN-6): untick → `OnboardingTaskController.reopenTask`
-  (Status = In Progress, `update as user`); the trigger clears Completed Date/By.
+  (Status = In Progress, `update as user`); the trigger clears Completed Date/By. Ticking asks for confirmation
+  first (KAN-7, `LightningConfirm` from `lightning/confirm`; Cancel/Esc → nothing saved, box unticked; the last open
+  task's message warns the Account becomes Active). Reopening has no confirmation.
 - Onboarding Task record page = `Onboarding_Task__c-Onboarding Task Layout` (in source since KAN-3, edit in place):
   task fields read-only, Edit/Delete/Clone excluded. **UI-only control**: `Onboarding_Manager` still grants edit/delete
   on the object (completeTask needs `update as user`), so list views, API and Flows can still change or delete tasks.
