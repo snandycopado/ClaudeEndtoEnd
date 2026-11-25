@@ -16,7 +16,8 @@
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | Deploy to developer org (job id) | Succeeded, NoTestRun: `0Af…`                                                                                    |
 | Code review (sf-code-review)     | No Blockers                                                                                                     |
-| Tests                            | Not written or run by Claude. Developer to run them and add any needed (suggested cases in the plan, section 3) |
+| E2E UI tests (Playwright)        | n passed / n failed — TC ids of failures and their cause                                                        |
+| Jest / Apex tests                | Not written or run by Claude. Developer to run them and add any needed (suggested cases in the plan, section 3) |
 
 ### Manual steps (from the Deployment Tracker)
 

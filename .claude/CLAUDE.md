@@ -55,6 +55,9 @@ Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start
 4. sf-code-review skill (code-reviewer subagent, one pass). Fix every Blocker.
 5. sf-deploy skill: deploy the story's components to the alias in `.claude/allowed-orgs` **without asking**
    (no tests run: `NoTestRun`). Record the job id in the Deployment Tracker.
+   **5b. E2E** — the one test run Claude does: e2e-test skill (e2e-tester subagent) runs the module's Playwright UI
+   scenarios in `.claude/e2e/` against that org, and adds a `TC-nn` scenario per acceptance criterion. Record
+   passed/failed in the Deployment Tracker and the PR. Fix story-caused failures, then redeploy. Jest/Apex stay with the developer.
 6. Update the Deployment Tracker (manual steps, status) and the module rule file in the same change.
 7. pr-description skill → push the branch, open a PR.
 8. Ask the user to verify in esm-dev with the buttons **Feature working fine / Need improvement**. Need improvement →
@@ -83,6 +86,7 @@ or any other metadata or data needs the user's explicit approval for that specif
 
 - Validate with tests (developer, optional): `node .claude/skills/sf-deploy/deploy.mjs --validate --tests <A,B> --metadata <Type:Name>`
 - Deploy: `node .claude/skills/sf-deploy/deploy.mjs --metadata <Type:Name> [...]` (guarded; NoTestRun, no dry run)
+- E2E UI tests (Claude runs them after deploy): `npm run test:e2e [-- specs/<module>] [-- -g "TC-04"]` · watch: `npm run test:e2e:headed` · report: `npm run test:e2e:report`
 - Tests (developer runs them, not Claude): `sf apex run test --class-names <Tests> --target-org <alias> --result-format human --code-coverage --wait 20`
 
 ## Guardrails

@@ -49,14 +49,21 @@ Suggested test cases for the developer:
 
 - …
 
+**E2E scenarios** (Claude adds and runs them after deploy — `.claude/e2e/`, skill e2e-test):
+
+| ID    | Scenario (user steps)               | UI check           | Data check (SOQL) | AC   |
+| ----- | ----------------------------------- | ------------------ | ----------------- | ---- |
+| TC-nn | Open **<Tab>** → New → **<RT>** → … | what the user sees | field values      | AC n |
+
 ## 4. Deployment Tracker
 
-| #   | Step                     | Components / action                                    | Who       | Status  | Evidence |
-| --- | ------------------------ | ------------------------------------------------------ | --------- | ------- | -------- |
-| 1   | Deploy to dev org        | `Type:Name`, …                                         | Claude    | Pending | job id   |
-| 2   | Manual step: …           | e.g. Page Layout Assignment, permission set assignment | Admin     | Pending |          |
-| 3   | Developer review + tests | run tests, add tests if needed                         | Developer | Pending |          |
-| 4   | Pull request             | PR link                                                | Claude    | Pending |          |
+| #   | Step                     | Components / action                                    | Who       | Status  | Evidence            |
+| --- | ------------------------ | ------------------------------------------------------ | --------- | ------- | ------------------- |
+| 1   | Deploy to dev org        | `Type:Name`, …                                         | Claude    | Pending | job id              |
+| 1b  | E2E UI tests             | `npm run test:e2e -- specs/<module>`                   | Claude    | Pending | n passed / n failed |
+| 2   | Manual step: …           | e.g. Page Layout Assignment, permission set assignment | Admin     | Pending |                     |
+| 3   | Developer review + tests | run tests, add tests if needed                         | Developer | Pending |                     |
+| 4   | Pull request             | PR link                                                | Claude    | Pending |                     |
 
 **Manual steps** (profiles, layout assignment, default record types, permission set assignments, data):
 
