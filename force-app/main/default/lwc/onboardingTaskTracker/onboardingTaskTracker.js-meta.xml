@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>67.0</apiVersion>
-    <description>Shows an Account's onboarding tasks, overall progress, and a checkbox to complete each task.</description>
+    <description
+  >Shows an Account's onboarding tasks, overall progress, and a checkbox to complete each task. Click a task name to open its record.</description>
     <isExposed>true</isExposed>
     <masterLabel>Onboarding Task Tracker</masterLabel>
     <targets>

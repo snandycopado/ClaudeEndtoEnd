@@ -1,0 +1,34 @@
+# Salesforce Code Analyzer v5 configuration for this repo.
+# Used by the sf-code-review skill and by CI (.github/workflows/pr-validation.yml).
+# Severity: 1 Critical, 2 High, 3 Moderate, 4 Low, 5 Info. CI fails on severity 1-2.
+
+ignores:
+  files:
+    - "**/node_modules/**"
+    - "**/.sfdx/**"
+    - "**/.sf/**"
+    - "**/__tests__/**"
+    - ".claude/**"
+
+engines:
+  eslint:
+    auto_discover_eslint_config: false
+  pmd:
+    custom_rulesets: []
+
+rules:
+  pmd:
+    ApexUnitTestClassShouldHaveRunAs:
+      severity: 3
+    ApexSharingViolations:
+      severity: 2
+    ApexCRUDViolation:
+      severity: 2
+    ApexSOQLInjection:
+      severity: 1
+    OperationWithLimitsInLoop:
+      severity: 1
+    AvoidHardcodingId:
+      severity: 1
+    EmptyCatchBlock:
+      severity: 1
