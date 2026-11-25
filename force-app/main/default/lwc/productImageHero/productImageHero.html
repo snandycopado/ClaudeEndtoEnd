@@ -1,0 +1,105 @@
+<template>
+  <article class="slds-card hero">
+    <div class="slds-card__body slds-card__body_inner slds-p-vertical_medium">
+      <template lwc:if={isLoading}>
+        <div class="slds-is-relative loading">
+          <lightning-spinner
+            alternative-text="Loading product"
+            size="small"
+          ></lightning-spinner>
+        </div>
+      </template>
+      <template lwc:elseif={errorMessage}>
+        <div class="slds-text-color_error" role="alert">
+          Could not load the product: {errorMessage}
+        </div>
+      </template>
+      <template lwc:else>
+        <div class="slds-grid slds-wrap slds-gutters">
+          <div
+            class="slds-col slds-size_1-of-1 slds-medium-size_5-of-12 slds-m-bottom_small"
+          >
+            <div class="image-frame slds-align_absolute-center">
+              <template lwc:if={hasImages}>
+                <img
+                  class="product-image"
+                  src={currentImageUrl}
+                  alt={currentAlt}
+                  data-id="product-image"
+                />
+              </template>
+              <template lwc:else>
+                <div class="slds-text-align_center placeholder">
+                  <lightning-icon
+                    icon-name="utility:image"
+                    size="large"
+                    alternative-text="No product image"
+                  ></lightning-icon>
+                  <p class="slds-m-top_small slds-text-color_weak">
+                    No product image yet. Upload one in the Product Image tab.
+                  </p>
+                </div>
+              </template>
+            </div>
+            <template lwc:if={hasMany}>
+              <div
+                class="slds-grid slds-grid_align-center slds-grid_vertical-align-center slds-m-top_x-small"
+              >
+                <lightning-button-icon
+                  icon-name="utility:chevronleft"
+                  variant="bare"
+                  alternative-text="Previous image"
+                  onclick={handlePrevious}
+                ></lightning-button-icon>
+                <template for:each={dots} for:item="dot">
+                  <button
+                    key={dot.key}
+                    class={dot.className}
+                    aria-label={dot.label}
+                    aria-current={dot.current}
+                    data-index={dot.index}
+                    onclick={handleDot}
+                  ></button>
+                </template>
+                <lightning-button-icon
+                  icon-name="utility:chevronright"
+                  variant="bare"
+                  alternative-text="Next image"
+                  onclick={handleNext}
+                ></lightning-button-icon>
+              </div>
+            </template>
+          </div>
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_7-of-12">
+            <template lwc:if={family}>
+              <p class="slds-text-title_caps slds-text-color_weak brand">
+                {family}
+              </p>
+            </template>
+            <h1 class="slds-text-heading_large slds-m-top_xx-small name">
+              {name}
+            </h1>
+            <template lwc:if={hasPrice}>
+              <p class="slds-text-heading_medium slds-m-top_small price">
+                <lightning-formatted-number
+                  value={price}
+                  format-style="currency"
+                ></lightning-formatted-number>
+              </p>
+            </template>
+            <template lwc:if={description}>
+              <div class="slds-border_top slds-m-top_medium slds-p-top_small">
+                <p class="slds-text-title_bold">Description</p>
+                <p class="slds-m-top_xx-small slds-text-color_weak">
+                  <lightning-formatted-text
+                    value={description}
+                  ></lightning-formatted-text>
+                </p>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+  </article>
+</template>

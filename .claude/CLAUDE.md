@@ -22,9 +22,10 @@ Module knowledge is in `.claude/rules/` and loads automatically when you open ma
 | Shared Account model          | Account record types/status/email, layout, record page, Path, AccountTrigger | rules/shared.md                           | Live                   |
 | Onboarding                    | Onboarding*, onboardingTaskTracker                                           | rules/modules/onboarding.md               | Live                   |
 | Lifecycle Management          | Lcm*, LCM_*, lcmVendorNotifier                                               | rules/modules/lifecycle-management.md     | Live                   |
+| Product Catalog               | ProductImage*, productImage*, Product_Image*, Product_Record_Page            | rules/modules/product-catalog.md          | Live                   |
 | Offboarding / SSO             | Offboarding*, offboarding*, Sso*, sso*                                       | rules/modules/offboarding.md, sso.md      | Planned                |
 | Experience Cloud              | experiences/, networks/, sites/                                              | rules/experience.md                       | Planned                |
-| Zapzilla / Product / DocuSign | Zapzilla*, Product*, DocuSign* (dsfs__ = managed, never edit)                | rules/integrations/*.md                   | Planned                |
+| Zapzilla / Product / DocuSign | Zapzilla*, ProductIntegration*, DocuSign* (dsfs__ = managed, never edit)     | rules/integrations/*.md                   | Planned                |
 
 ## Non-negotiable patterns
 

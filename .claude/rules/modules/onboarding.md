@@ -34,7 +34,8 @@ when every task is Completed, set the Account to **Active**.
 - Lightning app **Boarding Automation** (`applications/Boarding_Automation`, KAN-8): standard navigation, desktop + phone,
   tabs Home, Accounts, Contacts, Reports, Dashboards, Products (in that order). Visible through `Onboarding_Manager`
   (`applicationVisibilities`, not default), which also grants Products tab + **read-only** Product2. Profiles may still hide
-  standard tabs: manual admin check.
+  standard tabs: manual admin check. Since KAN-9 the app also sets `Product_Record_Page` as the Product View page (Product Catalog module), and
+  `Onboarding_Manager` can see it read-only (image field read, Pricebook2 read, `ProductImageController`).
 - `OnboardingEmailQueueable`: owner email per new task using `Email_Template_Name__c`
   (default `Onboarding_Task_Assigned`, folder email/Onboarding_Email_Templates).
 
