@@ -1,0 +1,71 @@
+<template>
+  <lightning-card title="Product Image" icon-name="standard:file">
+    <div class="slds-p-horizontal_medium">
+      <template lwc:if={isLoading}>
+        <div class="slds-is-relative loading">
+          <lightning-spinner
+            alternative-text="Loading"
+            size="small"
+          ></lightning-spinner>
+        </div>
+      </template>
+      <template lwc:elseif={recordError}>
+        <div class="slds-text-color_error" role="alert">
+          Could not load the product: {recordError}
+        </div>
+      </template>
+      <template lwc:else>
+        <div class="slds-grid slds-wrap slds-gutters">
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+            <template lwc:if={canUpload}>
+              <lightning-file-upload
+                label="Upload product image"
+                name="productImage"
+                accept={acceptedFormats}
+                record-id={recordId}
+                onuploadfinished={handleUploadFinished}
+                multiple
+              ></lightning-file-upload>
+            </template>
+            <template lwc:else>
+              <p class="slds-text-color_weak">
+                You can view the product image. To upload images, ask an admin
+                for the Product Image Manager permission set.
+              </p>
+            </template>
+            <p
+              class="slds-text-body_small slds-text-color_weak slds-m-top_x-small"
+            >
+              PNG, JPG, JPEG, GIF or WEBP. The newest image is shown at the top
+              of the product page; earlier images stay in the gallery.
+            </p>
+            <template lwc:if={isSaving}>
+              <div class="slds-is-relative loading">
+                <lightning-spinner
+                  alternative-text="Saving product image"
+                  size="small"
+                ></lightning-spinner>
+              </div>
+            </template>
+          </div>
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+            <p class="slds-text-title_bold slds-m-bottom_x-small">
+              Current image
+            </p>
+            <template lwc:if={currentImageUrl}>
+              <img
+                class="preview"
+                src={currentImageUrl}
+                alt={currentAlt}
+                data-id="current-image"
+              />
+            </template>
+            <template lwc:else>
+              <p class="slds-text-color_weak">No product image yet.</p>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+  </lightning-card>
+</template>

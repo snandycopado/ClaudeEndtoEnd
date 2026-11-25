@@ -1,0 +1,9 @@
+.loading {
+  min-height: 3rem;
+}
+
+.preview {
+  max-width: 100%;
+  max-height: 10rem;
+  object-fit: contain;
+}

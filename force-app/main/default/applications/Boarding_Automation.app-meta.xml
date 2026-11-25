@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment
+    >KAN-9: Product record page with the product image header</comment>
+        <content>Product_Record_Page</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>Product2</pageOrSobjectType>
+    </actionOverrides>
     <description
   >Boarding Automation (KAN-8): Home, Accounts, Contacts, Reports, Dashboards and Products for the onboarding team. Visible through the Onboarding_Manager permission set.</description>
     <formFactors>Small</formFactors>
