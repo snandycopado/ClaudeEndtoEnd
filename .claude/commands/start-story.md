@@ -58,9 +58,11 @@ Follow "How you work" steps 2-7 in `.claude/CLAUDE.md`:
    the plan's Low Level Design.
 3. **sf-code-review** skill (one pass): fix every Blocker.
 4. **sf-deploy** skill: deploy the story's components with NoTestRun, without asking. Record the job id in the Deployment Tracker.
+   Then the **e2e-test** skill (e2e-tester subagent): add the plan's `TC-nn` scenarios, run the module's E2E specs, record
+   passed/failed in the Deployment Tracker. A story-caused failure → fix, redeploy, re-run.
 5. Update the Deployment Tracker (status, manual steps) and the module rule file.
 6. **pr-description** skill → `git push -u origin <branch>` → `gh pr create`. The PR is the approval point.
-   List the manual steps and "tests: developer to run" in the PR.
+   List the manual steps, the E2E result and "Jest/Apex tests: developer to run" in the PR.
 
 ## 7. Verify the feature: buttons
 

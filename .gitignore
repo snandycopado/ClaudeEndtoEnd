@@ -46,3 +46,7 @@ $RECYCLE.BIN/
 **/__pycache__/
 **/.venv/
 **/venv/
+
+# E2E (Playwright): live Salesforce session and run evidence - never commit
+.claude/e2e/.auth/
+.claude/e2e/results/
