@@ -58,9 +58,10 @@ Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start
 4. sf-code-review skill (code-reviewer subagent, one pass). Fix every Blocker.
 5. sf-deploy skill: deploy the story's components to the alias in `.claude/allowed-orgs` **without asking**
    (no tests run: `NoTestRun`). Record the job id in the Deployment Tracker.
-   **5b. E2E** — the one test run Claude does: e2e-test skill (e2e-tester subagent) runs the module's Playwright UI
-   scenarios in `.claude/e2e/` against that org, and adds a `TC-nn` scenario per acceptance criterion. Record
-   passed/failed in the Deployment Tracker and the PR. Fix story-caused failures, then redeploy. Jest/Apex stay with the developer.
+   **5b. E2E** (only if the user chose it at plan approval): the e2e-test skill (e2e-tester subagent) adds a `TC-nn`
+   scenario per acceptance criterion and runs the module's Playwright UI scenarios against that org, in the mode the user
+   chose: **background** (headless) or **browser** (visible, slow motion). Record passed/failed, or "E2E skipped by the
+   user", in the Deployment Tracker and the PR. Fix story-caused failures, then redeploy. Jest/Apex stay with the developer.
 6. Update the Deployment Tracker on the Confluence page (manual steps, status), the module rule file, and the module's
    page in Confluence _Module Wise Design Document_ (current module design; story added to its Stories list) in the same change.
    Read the page again before building and before the PR, because people may edit it.
@@ -72,6 +73,14 @@ Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start
 **After the plan is approved, do not ask questions** until the Verify buttons in step 8. Run steps 2–7 end to end. Stop only for a real blocker (a deploy
 failure you cannot fix, a hook block, or a change of scope) or a **destructive change**. Record deviations in the plan
 and the PR. Questions belong in planning, before "Approve this plan?".
+
+**Redeploys never need a question.** After a fix, after "Need improvement", or after a deploy failure Claude can fix,
+redeploy straight away (NoTestRun) and report the job id.
+
+**How to ask (every question).** Ask as few questions as possible: put all planning questions in one button dialog,
+and never ask about something a default or the plan already decides. Every question must say in plain English **why**
+Claude is asking and what changes with the answer, in the question text itself, for example: "Should I write automated
+UI tests for KAN-9? I am asking because they add about 5 minutes and create test records in esm-dev."
 
 **Destructive changes are the one exception: always ask first.** Deleting a class, trigger, field, object, record type
 or any other metadata or data needs the user's explicit approval for that specific change, even after plan approval.

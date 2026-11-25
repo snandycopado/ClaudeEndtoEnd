@@ -26,6 +26,9 @@ npm run test:e2e:report                            # open the HTML report (scree
 
 ## After a story deploy (workflow step 5b)
 
+Only when the user chose E2E at plan approval, in the mode they chose (background = headless, browser = `npm run test:e2e:watch`).
+Otherwise write "E2E skipped by the user" in the Deployment Tracker and the PR.
+
 1. Run the specs of the story's module. Use the **e2e-tester** subagent to keep long output out of the main context.
 2. Record the result in the plan's Deployment Tracker: `E2E | <n> passed / <n> failed | results.json summary`.
 3. A failure caused by the story: fix, redeploy, re-run. A failure from a selector, timing or org data: fix

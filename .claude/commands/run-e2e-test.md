@@ -26,6 +26,11 @@ Mode:
   tests and press ▶, and stop here: the user drives it.
 - otherwise → headless: `npx playwright test -c .claude/e2e/playwright.config.js <scope>`.
 
+**No mode given?** Ask one button question before running (header "Run mode"): "Should the tests run in the
+background or open a browser? I am asking because the browser lets you watch every click but takes longer and opens a
+window on your screen." Options: **"In the background"** (headless) and **"Open the browser"** (`watch`). Don't ask when
+the input names a mode, or when `/start-story` already has the answer from plan approval.
+
 Serial journeys: running one TC from the middle of a journey (e.g. TC-05) fails, because it needs the record that the
 earlier steps create. For a TC inside a serial describe, run the whole describe (its spec file) and say so.
 

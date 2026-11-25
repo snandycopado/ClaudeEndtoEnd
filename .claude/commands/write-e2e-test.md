@@ -35,7 +35,8 @@ Show a table using `.claude/skills/e2e-test/scenario-template.md`: one or more `
 user steps, the UI check, the SOQL check, and the AC. Also say which spec file and page object you will create or
 change, and what test data the run creates (`E2E-…`).
 
-Ask with buttons (AskUserQuestion): question "Write these E2E scenarios?" · header "E2E plan" ·
+Ask with buttons (AskUserQuestion), saying why: question "Write these E2E scenarios? I am asking because they become
+part of the suite and run against esm-dev, creating E2E-… test records." · header "E2E plan" ·
 options **"Approve"** ("Write the specs as listed") and **"Need improvement"** ("Tell me what to change").
 Need improvement → ask what to change if no text came with it, revise, and ask again.
 

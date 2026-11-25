@@ -40,13 +40,23 @@ Input: `$ARGUMENTS`
 
 - Run the **story-to-plan** skill with the story text from Jira. It creates the design document in Confluence (folder _User Story
   Design Document_) and the link file `.claude/docs/stories/<KEY>.md`. Show the Confluence link with the summary.
-- Show the plan summary, then ask for approval **with buttons** (the AskUserQuestion tool), never as a plain-text question:
-  - question: "Approve the plan for <KEY>?" · header: "Plan"
-  - options: **"Approve"** ("Build, deploy to esm-dev and open the PR without further questions") and
-    **"Need improvement"** ("Tell me what to change in the plan").
+- Show the plan summary (including the proposed E2E scenarios), then ask **one** button dialog (the AskUserQuestion tool),
+  never plain-text questions. It has three questions, and each says **why** it is asked:
+  1. header "Plan": "Approve the plan for <KEY>? I need your go-ahead because after this I build, deploy to esm-dev and
+     open the PR without stopping." Options: **"Approve"** ("Build, deploy and open the PR without further questions") and
+     **"Need improvement"** ("Tell me what to change in the plan").
+  2. header "E2E tests": "Should I write and run automated UI tests (E2E) for <KEY>? I am asking because they add about
+     5 minutes and create test records named E2E-… in esm-dev." Options: **"Yes, write and run"** ("Add the TC scenarios
+     from the plan and run them after deploy") and **"No, skip E2E"** ("Deploy and open the PR without UI tests").
+  3. header "Run mode": "If E2E runs, should it run in the background or open a browser? I am asking because the browser
+     lets you watch every click but takes longer and opens a window on your screen." Options: **"In the background"**
+     ("Headless, about 3-5 minutes, nothing opens") and **"Open the browser"** ("Visible Chrome in slow motion").
+     Ignored when question 2 is "No".
   - Put the open questions with your recommendations in the summary; "Approve" means the recommendations are accepted.
+  - Record the E2E answers in the design page's Approval section.
 - **Need improvement** (or text typed in "Other"/notes): if no text came with it, ask "What should be improved?" and
-  wait. Update the Confluence page, show what changed, and ask the same two buttons again. Repeat until **Approve**.
+  wait. Update the Confluence page, show what changed, and ask the Plan question again (with its reason). Keep the E2E
+  answers unless the user changes them. Repeat until **Approve**.
 
 ## 6. Build (after approval only) — no questions from here on
 
@@ -61,8 +71,11 @@ Follow "How you work" steps 2-7 in `.claude/CLAUDE.md`:
    the plan's Low Level Design.
 3. **sf-code-review** skill (one pass): fix every Blocker.
 4. **sf-deploy** skill: deploy the story's components with NoTestRun, without asking. Record the job id in the Deployment Tracker.
-   Then the **e2e-test** skill (e2e-tester subagent): add the plan's `TC-nn` scenarios, run the module's E2E specs, record
-   passed/failed in the Deployment Tracker. A story-caused failure → fix, redeploy, re-run.
+   Then, **only if the user chose E2E at approval**, the **e2e-test** skill (e2e-tester subagent): add the plan's `TC-nn`
+   scenarios, run the module's E2E specs in the chosen mode (background: `npx playwright test …`; browser:
+   `npm run test:e2e:watch -- …`), and record passed/failed in the Deployment Tracker. A story-caused failure → fix,
+   redeploy, re-run, all without asking. E2E skipped → write "E2E skipped by the user" in the tracker and the PR.
+   Redeploys never need a question (after a fix, or after a deploy failure you can fix).
 5. Update the Deployment Tracker on the Confluence page (status, manual steps, E2E result), the module rule file, and the
    module's page in _Module Wise Design Document_ (**confluence-design** skill, "Update the module design page").
 6. **pr-description** skill → `git push -u origin <branch>` → `gh pr create`. The PR is the approval point.
@@ -73,13 +86,14 @@ Follow "How you work" steps 2-7 in `.claude/CLAUDE.md`:
 When the PR is open, say clearly what was deployed and how to verify it in esm-dev (steps, the record to open,
 and the hard-refresh tip for LWC changes). Then ask **with buttons** (AskUserQuestion):
 
-- question: "Please verify <KEY> in esm-dev. Is the feature working?" · header: "Verify"
+- question: "Please verify <KEY> in esm-dev. Is the feature working? I am asking because your answer decides whether I
+  merge the PR and close the story, or fix it first." · header: "Verify"
 - options: **"Feature working fine"** ("Merge the PR, set Jira to Done and close the story") and
   **"Need improvement"** ("Tell me what to fix").
 
 **Need improvement:** if no text came with it, ask "What should be improved?" and wait. Fix it on the same branch
-(no new plan approval unless the scope changes), deploy (NoTestRun), push, comment on the PR, update the Deployment
-Tracker, then ask the **Verify** buttons again.
+(no new plan approval unless the scope changes), **redeploy without asking** (NoTestRun), re-run E2E if it was chosen,
+push, comment on the PR, update the Deployment Tracker, then ask the **Verify** buttons again.
 
 **Feature working fine:** close the story without further questions:
 
