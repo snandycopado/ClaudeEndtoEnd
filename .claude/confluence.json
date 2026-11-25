@@ -1,0 +1,35 @@
+{
+  "$comment": "Confluence location of the design documents (master copy). Used by the confluence-design skill. Ids only - no account ids, usernames or org details (public repo).",
+  "site": "suman-nandy.atlassian.net",
+  "spaceId": "229378",
+  "folders": {
+    "storyDesigns": {
+      "id": "458753",
+      "title": "User Story Design Document",
+      "holds": "One page per story, titled '<KEY>: <story title>'"
+    },
+    "moduleDesigns": {
+      "id": "425985",
+      "title": "Module Wise Design Document",
+      "holds": "One page per module (Onboarding, Lifecycle Management, ...)",
+      "pages": {
+        "Onboarding Module": "393218",
+        "Lifecycle Management (LCM) Module": "491540",
+        "Shared Account Data Model": "557077"
+      }
+    },
+    "frameworks": {
+      "id": "196610",
+      "title": "Framework Document",
+      "holds": "Trigger, Exception and Integration framework documents",
+      "pages": {
+        "Trigger Framework": "557093",
+        "Exception Framework": "65889",
+        "Integration Framework (not built yet)": "229511"
+      }
+    }
+  },
+  "contentType": "page",
+  "bodyFormat": "html",
+  "pageLink": "https://suman-nandy.atlassian.net/wiki/pages/viewpage.action?pageId=<id>"
+}

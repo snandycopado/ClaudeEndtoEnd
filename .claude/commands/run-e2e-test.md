@@ -62,4 +62,4 @@ Then:
 - the records created (names starting with `E2E-`, from `sf data query`). They are not deleted; cleanup needs the
   user's approval;
 - "Report: `npm run test:e2e:report` · watch: `/run-e2e-test <scope> watch`";
-- story plan for the scope exists → update its Deployment Tracker row "E2E UI tests" with passed/failed and the date.
+- story design page exists for the scope → update, on the Confluence page, its Deployment Tracker row "E2E UI tests" with passed/failed and the date.

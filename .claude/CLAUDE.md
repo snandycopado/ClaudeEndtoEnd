@@ -6,6 +6,8 @@ Sales Cloud. Standard Salesforce DX project — **the project structure is fixed
 all metadata lives in `force-app/main/default/` (one package directory in sfdx-project.json).
 Everything Claude-related lives in `.claude/` (this file, rules, agents, skills, hooks, docs); CI in `.github/`.
 Operating model: .claude/docs/plan.md · Architecture and ADRs: .claude/docs/architecture/.
+**Design documents live in Confluence (master copy)**: space sumannandy, folders _User Story Design Document_,
+_Module Wise Design Document_ and _Framework Document_ (ids in `.claude/confluence.json`, skill: confluence-design).
 
 ## Modules = file-name prefixes
 
@@ -43,7 +45,8 @@ Module knowledge is in `.claude/rules/` and loads automatically when you open ma
 
 Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start-story.md).
 
-1. Read the story. Write the plan to `.claude/docs/stories/<KEY>.md` (skill: story-to-plan) with four sections:
+1. Read the story and the module/framework design pages in Confluence. Write the design document as a Confluence page
+   `<KEY>: <title>` (skill: story-to-plan → confluence-design) plus the link file `.claude/docs/stories/<KEY>.md`, with four sections:
    Story Description, High Level Design, Low Level Design, Deployment Tracker (with manual steps). STOP for approval
    with the buttons **Approve / Need improvement** (AskUserQuestion), never a plain-text question.
 2. Branch `feature/<KEY>-short-name` from `develop` (from `main` until `develop` exists). Never commit to
@@ -58,7 +61,9 @@ Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start
    **5b. E2E** — the one test run Claude does: e2e-test skill (e2e-tester subagent) runs the module's Playwright UI
    scenarios in `.claude/e2e/` against that org, and adds a `TC-nn` scenario per acceptance criterion. Record
    passed/failed in the Deployment Tracker and the PR. Fix story-caused failures, then redeploy. Jest/Apex stay with the developer.
-6. Update the Deployment Tracker (manual steps, status) and the module rule file in the same change.
+6. Update the Deployment Tracker on the Confluence page (manual steps, status), the module rule file, and the module's
+   page in Confluence _Module Wise Design Document_ (current module design; story added to its Stories list) in the same change.
+   Read the page again before building and before the PR, because people may edit it.
 7. pr-description skill → push the branch, open a PR.
 8. Ask the user to verify in esm-dev with the buttons **Feature working fine / Need improvement**. Need improvement →
    get the text, fix, redeploy, ask again. Feature working fine → merge the PR, set Jira to Done, update the plan, and

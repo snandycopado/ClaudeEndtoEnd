@@ -31,20 +31,22 @@ Input: `$ARGUMENTS`
 
 ## 4. Existing work
 
-- If `.claude/docs/stories/<KEY>.md` exists, read it, report how far it got (plan approved? branch?
-  deployed? PR?) and ask: "Resume from <step> or re-plan?" Wait for the answer.
+- Look for the design document in Confluence (**confluence-design** skill, "Find") and the link file
+  `.claude/docs/stories/<KEY>.md`. If either exists, read the Confluence page (the master copy), report how far it got
+  (plan approved? branch? deployed? PR?) and ask: "Resume from <step> or re-plan?" Wait for the answer.
 - `git status` and the current branch: warn about uncommitted changes. Do not create a branch yet.
 
 ## 5. Plan - STOP for approval
 
-- Run the **story-to-plan** skill with the story text from Jira. It writes `.claude/docs/stories/<KEY>.md`.
+- Run the **story-to-plan** skill with the story text from Jira. It creates the design document in Confluence (folder _User Story
+  Design Document_) and the link file `.claude/docs/stories/<KEY>.md`. Show the Confluence link with the summary.
 - Show the plan summary, then ask for approval **with buttons** (the AskUserQuestion tool), never as a plain-text question:
   - question: "Approve the plan for <KEY>?" · header: "Plan"
   - options: **"Approve"** ("Build, deploy to esm-dev and open the PR without further questions") and
     **"Need improvement"** ("Tell me what to change in the plan").
   - Put the open questions with your recommendations in the summary; "Approve" means the recommendations are accepted.
 - **Need improvement** (or text typed in "Other"/notes): if no text came with it, ask "What should be improved?" and
-  wait. Update the plan, show what changed, and ask the same two buttons again. Repeat until **Approve**.
+  wait. Update the Confluence page, show what changed, and ask the same two buttons again. Repeat until **Approve**.
 
 ## 6. Build (after approval only) — no questions from here on
 
@@ -53,14 +55,16 @@ a real blocker (a deploy failure you can't fix, a hook block, or a scope change)
 change** (deleting a class, field, object or other metadata). Record deviations in the plan and the PR.
 Follow "How you work" steps 2-7 in `.claude/CLAUDE.md`:
 
-1. Branch `feature/<KEY>-<short-kebab-name>` from `develop` (from `main` until `develop` exists).
+1. Branch `feature/<KEY>-<short-kebab-name>` from `develop` (from `main` until `develop` exists). Read the Confluence
+   design page again before building: it is the master copy and may have been edited since approval.
 2. Build — fast. **No Jest tests, no test runs.** The developer reviews, runs and adds tests. Put suggested test cases in
    the plan's Low Level Design.
 3. **sf-code-review** skill (one pass): fix every Blocker.
 4. **sf-deploy** skill: deploy the story's components with NoTestRun, without asking. Record the job id in the Deployment Tracker.
    Then the **e2e-test** skill (e2e-tester subagent): add the plan's `TC-nn` scenarios, run the module's E2E specs, record
    passed/failed in the Deployment Tracker. A story-caused failure → fix, redeploy, re-run.
-5. Update the Deployment Tracker (status, manual steps) and the module rule file.
+5. Update the Deployment Tracker on the Confluence page (status, manual steps, E2E result), the module rule file, and the
+   module's page in _Module Wise Design Document_ (**confluence-design** skill, "Update the module design page").
 6. **pr-description** skill → `git push -u origin <branch>` → `gh pr create`. The PR is the approval point.
    List the manual steps, the E2E result and "Jest/Apex tests: developer to run" in the PR.
 
@@ -82,12 +86,14 @@ Tracker, then ask the **Verify** buttons again.
 1. Merge the PR: `gh pr merge <number> --merge` (keep the branch; stacked PRs depend on it). If the PR is stacked
    on another feature branch, say that it merged into that branch and reaches `main` when the base PR merges.
 2. Jira: move <KEY> to **Done** and comment with the PR link and "Verified by <user> on <date>".
-3. Plan: set Status to "Verified and merged" and record the verification in the Deployment Tracker; commit and push.
+3. Confluence page: set Status to "Verified and merged" and record the verification in the Deployment Tracker.
+   Update Status in the link file; commit and push.
 4. End with exactly this line on its own: **✅ Process completed. Ready for the next story.**
 
 ## 8. Jira updates
 
-- When the plan is approved, move <KEY> to In Progress and comment with the decisions and the branch name.
+- When the plan is approved, move <KEY> to In Progress and comment with the decisions, the branch name and
+  the Confluence design document link.
 - When the PR is open, comment the PR link on <KEY>.
 - When the feature is verified, move <KEY> to Done (step 7).
 - Never put org IDs, usernames or credentials in Jira comments.

@@ -5,7 +5,9 @@ description: Write the pull request description from the story plan and the bran
 
 # PR description
 
-1. Read `.claude/docs/stories/<KEY>.md` (Story Description, High and Low Level Design, Deployment Tracker).
+1. Read the design document from Confluence (the master copy; **confluence-design** skill, "Read"; the page id is in
+   `.claude/docs/stories/<KEY>.md`): Story Description, High and Low Level Design, Deployment Tracker. Link the page
+   in the PR description ("Story plan" line).
 2. `git diff <develop|main>...HEAD --stat` and `git log <develop|main>..HEAD --oneline`.
 3. Fill `pr-template.md` in this folder. Every section, no placeholders left; "None" where nothing applies.
 4. Evidence must be real output from this branch: the deploy job id and status, and the code-review result.

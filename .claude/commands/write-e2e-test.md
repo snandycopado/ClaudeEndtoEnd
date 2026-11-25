@@ -16,7 +16,8 @@ tests only. It does not change force-app metadata or deploy. To run the tests, u
 - Empty input → ask: "Which story or feature? Give the Jira key/link or describe the behaviour." and wait.
 - Jira key or link (`[A-Z][A-Z0-9]+-\d+`) → read it with the Atlassian MCP `getJiraIssue` (`view: "evidence"`,
   site `suman-nandy.atlassian.net` unless the link names another). Use the acceptance criteria.
-- If `.claude/docs/stories/<KEY>.md` exists, read it too (design, component names, existing E2E scenarios).
+- Read the story design document in Confluence (**confluence-design** skill; the link is in `.claude/docs/stories/<KEY>.md`):
+  design, component names, existing E2E scenarios.
 - Plain text → use it as the requirement.
 - Identify the module (file prefix → `.claude/rules/modules/*.md`) and read that rule file.
 
@@ -54,6 +55,6 @@ Need improvement → ask what to change if no text came with it, revise, and ask
 ## 5. Record
 
 - Add the scenarios to the Scenarios table in `.claude/e2e/README.md` and the file tree if new files were added.
-- Story plan exists → add or update the **E2E scenarios** table in its Low Level Design.
+- Story design page exists → add or update the **E2E scenarios** table in its Low Level Design, on the Confluence page.
 - Finish with: the scenarios written (ID + title), the files created or changed, and
   "Run them with `/run-e2e-test <KEY or TC ids>`".
