@@ -37,7 +37,7 @@ private class OnboardingServiceTest {
         OnboardingService.templateOverride = OnboardingTestFactory.standardTemplates();
         User u = OnboardingTestFactory.createOnboardingUser();
         System.runAs(u) {
-            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, 'New');
+            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, 'New');
             insert acc;
             Assert.areEqual(0, tasksOf(acc.Id).size(), 'No tasks before onboarding starts');
 
@@ -77,7 +77,7 @@ private class OnboardingServiceTest {
     static void restartDoesNotDuplicateTasks() {
         OnboardingService.templateOverride = OnboardingTestFactory.standardTemplates();
         System.runAs(OnboardingTestFactory.createOnboardingUser()) {
-            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
             insert acc;
             acc.Account_Status__c = 'New';
             update acc;
@@ -92,7 +92,7 @@ private class OnboardingServiceTest {
         OnboardingService.templateOverride = OnboardingTestFactory.standardTemplates();
         User u = OnboardingTestFactory.createOnboardingUser();
         System.runAs(u) {
-            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
             insert acc;
 
             List<Onboarding_Task__c> tasks = tasksOf(acc.Id);
@@ -116,7 +116,7 @@ private class OnboardingServiceTest {
     static void reopeningTaskClearsCompletionStamp() {
         OnboardingService.templateOverride = OnboardingTestFactory.standardTemplates();
         System.runAs(OnboardingTestFactory.createOnboardingUser()) {
-            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
             insert acc;
             Onboarding_Task__c task = tasksOf(acc.Id)[0];
             update setStatus(task.Id, OnboardingService.TASK_COMPLETED);
@@ -132,7 +132,7 @@ private class OnboardingServiceTest {
     static void deletingLastOpenTaskActivatesAccount() {
         OnboardingService.templateOverride = OnboardingTestFactory.standardTemplates();
         System.runAs(OnboardingTestFactory.createOnboardingUser()) {
-            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
             insert acc;
             List<Onboarding_Task__c> tasks = tasksOf(acc.Id);
             update setStatus(tasks[0].Id, OnboardingService.TASK_COMPLETED);
@@ -148,7 +148,7 @@ private class OnboardingServiceTest {
     static void restartWithAllTasksCompleteActivatesImmediately() {
         OnboardingService.templateOverride = OnboardingTestFactory.standardTemplates();
         System.runAs(OnboardingTestFactory.createOnboardingUser()) {
-            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
             insert acc;
             completeAll(acc.Id);
             Assert.areEqual(OnboardingService.ACCOUNT_ACTIVE, reload(acc.Id).Account_Status__c, 'Active after completion');
@@ -167,7 +167,7 @@ private class OnboardingServiceTest {
         Account acc;
         System.runAs(OnboardingTestFactory.createOnboardingUser()) {
             Test.startTest();
-            acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+            acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
             insert acc;
             Test.stopTest();
         }
@@ -187,7 +187,7 @@ private class OnboardingServiceTest {
         };
         System.runAs(OnboardingTestFactory.createOnboardingUser()) {
             Test.startTest();
-            insert OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+            insert OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
             Test.stopTest(); // runs the queueable, then delivers log events
         }
         // Long text fields cannot be filtered in SOQL; filter in Apex.
@@ -206,12 +206,12 @@ private class OnboardingServiceTest {
         // No override: the deployed Onboarding_Task_Template__mdt records drive task creation.
         Integer expected = 0;
         for (Onboarding_Task_Template__mdt t : Onboarding_Task_Template__mdt.getAll().values()) {
-            if (t.Is_Active__c && OnboardingService.appliesTo(t, OnboardingTestFactory.CUSTOMER)) {
+            if (t.Is_Active__c && OnboardingService.appliesTo(t, OnboardingTestFactory.AUSTRALIA)) {
                 expected++;
             }
         }
         System.runAs(OnboardingTestFactory.createOnboardingUser()) {
-            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.CUSTOMER, OnboardingService.ACCOUNT_START_ONBOARDING);
+            Account acc = OnboardingTestFactory.newAccount('Acme', OnboardingTestFactory.AUSTRALIA, OnboardingService.ACCOUNT_START_ONBOARDING);
             insert acc;
             Assert.areEqual(expected, tasksOf(acc.Id).size(), 'One task per matching org template');
         }
