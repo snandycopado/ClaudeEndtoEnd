@@ -9,5 +9,5 @@
 | Jira            | https://suman-nandy.atlassian.net/browse/KAN-8                             |
 | Module          | onboarding                                                                 |
 | Branch          | feature/KAN-8-boarding-automation-app                                      |
-| PR              |                                                                            |
-| Status          | Deployed                                                                   |
+| PR              | #9 (merged)                                                                |
+| Status          | Verified and merged                                                        |
