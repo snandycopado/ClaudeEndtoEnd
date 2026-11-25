@@ -21,8 +21,11 @@ description: Turn a user story (e.g. "Implement ONB-012") into a design document
 4. Branch name goes in the plan: `feature/<KEY>-<short-kebab-name>`.
 5. STOP. Show the plan summary (files to change, risks, open questions with recommendations) and ask with the
    AskUserQuestion buttons **"Approve"** / **"Need improvement"** (see `.claude/commands/start-story.md` step 5).
-   Include the Confluence page link so the user can review the full document there. On "Need improvement", get the
-   text, update the Confluence page and ask again. Do not create the branch or edit any metadata until the user
+   Show the Confluence page as a **clickable link on its own line** right above the buttons
+   (`[<KEY>: <title>](https://suman-nandy.atlassian.net/wiki/pages/viewpage.action?pageId=<id>)`) and repeat the URL in
+   the question text, so the user can open the document for review while the dialog is open. Do not ask about E2E
+   tests here (that comes after the story PR). On "Need improvement", get the text, update the Confluence page and ask
+   again, with the link again. Do not create the branch or edit any metadata until the user
    clicks Approve.
 6. After approval, update the Confluence page: the Approval section (who/when) and Status Approved. Then read it again
    (people may have edited it) and continue with the build from that version.

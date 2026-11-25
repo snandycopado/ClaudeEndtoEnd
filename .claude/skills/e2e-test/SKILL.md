@@ -24,16 +24,21 @@ npm run test:e2e:report                            # open the HTML report (scree
 - Results: `.claude/e2e/results/results.json` (read this, not the console), HTML report in `results/report/`.
   Both are git-ignored: traces contain a live session. Never commit, attach or upload them.
 
-## After a story deploy (workflow step 5b)
+## After the story PR is open (workflow step 7b)
 
-Only when the user chose E2E at plan approval, in the mode they chose (background = headless, browser = `npm run test:e2e:watch`).
-Otherwise write "E2E skipped by the user" in the Deployment Tracker and the PR.
+The E2E question is asked only after the story PR is open (start-story step 6.7). Only when the user says yes, in the
+mode they chose (background = headless, browser = `npm run test:e2e:watch`). Otherwise write "E2E skipped by the
+user" in the Deployment Tracker and on the story PR.
 
-1. Run the specs of the story's module. Use the **e2e-tester** subagent to keep long output out of the main context.
-2. Record the result in the plan's Deployment Tracker: `E2E | <n> passed / <n> failed | results.json summary`.
-3. A failure caused by the story: fix, redeploy, re-run. A failure from a selector, timing or org data: fix
-   the spec or page object. An unrelated pre-existing failure: record it, do not block the PR.
-4. List the E2E result in the PR's "Deployment and review" table.
+1. Branch `feature/<KEY>-e2e-tests` from the story branch. E2E files never go into the story PR.
+2. Write the plan's `TC-nn` scenarios (see "Add scenarios" below), then run the specs of the story's module. Use the
+   **e2e-tester** subagent to keep long output out of the main context.
+3. A failure caused by the story: fix it on the story branch, redeploy, push, merge the story branch into the E2E
+   branch and re-run. A failure from a selector, timing or org data: fix the spec or page object on the E2E branch.
+   An unrelated pre-existing failure: record it, do not block the PR.
+4. Open a separate **E2E PR** (base: the story branch, title `<KEY>: E2E UI tests`) with the passed/failed table.
+   Comment its link on the story PR.
+5. Record the result and the E2E PR link in the plan's Deployment Tracker: `E2E | <n> passed / <n> failed | E2E PR`.
 
 ## Add scenarios for a story
 

@@ -73,14 +73,15 @@ Also check the link file for `Page id`.
 
 When each update happens (start-story):
 
-| Moment               | Page update                                                                                        |
-| -------------------- | -------------------------------------------------------------------------------------------------- |
-| Plan written         | Create the page, Status Draft                                                                      |
-| Need improvement     | Revise the sections, Status Draft                                                                  |
-| Approve              | Approval section (who/date), Status Approved                                                       |
-| Deployed + E2E       | Tracker rows 1/1b (job id, E2E result), Status Deployed; **update the module design page** (below) |
-| PR opened            | Tracker row "Pull request" (PR link)                                                               |
-| Feature working fine | Tracker verified/merged rows, Status Verified and merged; module page: story marked verified       |
+| Moment               | Page update                                                                                  |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| Plan written         | Create the page, Status Draft                                                                |
+| Need improvement     | Revise the sections, Status Draft                                                            |
+| Approve              | Approval section (who/date), Status Approved                                                 |
+| Deployed             | Tracker row 1 (job id), Status Deployed; **update the module design page** (below)           |
+| E2E PR (if chosen)   | Tracker row 1b (E2E result, E2E PR link), or "E2E skipped by the user"                       |
+| PR opened            | Tracker row "Pull request" (PR link)                                                         |
+| Feature working fine | Tracker verified/merged rows, Status Verified and merged; module page: story marked verified |
 
 ## Update the module design page (every story)
 
