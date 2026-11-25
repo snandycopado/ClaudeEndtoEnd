@@ -17,7 +17,8 @@ like a user, and verifies each feature in the UI **and** in the data (SOQL).
 ├── specs/
 │   └── onboarding/
 │       ├── onboarding-journey.e2e.js    TC-01 … TC-08, TC-10 (serial, one Australia account)
-│       └── country-record-types.e2e.js  TC-09
+│       ├── country-record-types.e2e.js  TC-09
+│       └── boarding-automation-app.e2e.js TC-11 … TC-13 (KAN-8)
 ├── .auth/                     session state (git-ignored — live session)
 └── results/                   report/, artifacts/, results.json (git-ignored)
 ```
@@ -39,18 +40,21 @@ like a user, and verifies each feature in the UI **and** in the data (SOQL).
 
 ## Scenarios
 
-| ID    | Scenario                                                                            | Verifies                                                                                             |
-| ----- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| TC-01 | Accounts tab → New → **Australia** → name → Save                                    | Record page opens; tracker empty state; Status New, record type Australia                            |
-| TC-02 | Path → **Start Onboarding** → Mark as Current                                       | 4 tasks in order (KYC, Contract, Billing, Welcome Call); 0 of 4; template keys for Australia (KAN-2) |
-| TC-03 | Tick a task → **Cancel**                                                            | Dialog "Complete "…"?"; nothing saved (KAN-7)                                                        |
-| TC-04 | Tick a task → **OK**                                                                | Badge Completed, "Completed by", 1 of 4, name not struck through (KAN-7, KAN-4)                      |
-| TC-05 | Untick the completed task                                                           | No dialog; In Progress; 0 of 4 (KAN-6)                                                               |
-| TC-06 | Complete all tasks                                                                  | Last-task warning; overall Completed; Account **Active**, completed date set                         |
-| TC-07 | Untick one task on the Active account                                               | Account back to **Start Onboarding**, completed date cleared (KAN-6)                                 |
-| TC-08 | Click a task name                                                                   | Onboarding Task record page; no Edit / Delete / Clone (KAN-3)                                        |
-| TC-10 | Read the "Completed by … on …" line                                                 | Words separated by spaces as the user sees them (currently **fails**: renders "Completedby … on…")   |
-| TC-09 | New Account record type list; create **United States** account and start onboarding | Country record types offered, Customer not; US template keys (KAN-2)                                 |
+| ID    | Scenario                                                                            | Verifies                                                                                                            |
+| ----- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| TC-01 | Accounts tab → New → **Australia** → name → Save                                    | Record page opens; tracker empty state; Status New, record type Australia                                           |
+| TC-02 | Path → **Start Onboarding** → Mark as Current                                       | 4 tasks in order (KYC, Contract, Billing, Welcome Call); 0 of 4; template keys for Australia (KAN-2)                |
+| TC-03 | Tick a task → **Cancel**                                                            | Dialog "Complete "…"?"; nothing saved (KAN-7)                                                                       |
+| TC-04 | Tick a task → **OK**                                                                | Badge Completed, "Completed by", 1 of 4, name not struck through (KAN-7, KAN-4)                                     |
+| TC-05 | Untick the completed task                                                           | No dialog; In Progress; 0 of 4 (KAN-6)                                                                              |
+| TC-06 | Complete all tasks                                                                  | Last-task warning; overall Completed; Account **Active**, completed date set                                        |
+| TC-07 | Untick one task on the Active account                                               | Account back to **Start Onboarding**, completed date cleared (KAN-6)                                                |
+| TC-08 | Click a task name                                                                   | Onboarding Task record page; no Edit / Delete / Clone (KAN-3)                                                       |
+| TC-10 | Read the "Completed by … on …" line                                                 | Words separated by spaces as the user sees them (currently **fails**: renders "Completedby … on…")                  |
+| TC-11 | App Launcher → **Boarding Automation**                                              | Nav bar: Home, Accounts, Contacts, Reports, Dashboards, Products in order; AppDefinition Standard/Lightning (KAN-8) |
+| TC-12 | In the app: Accounts → New → Australia → Save                                       | Record page in the app with Path and tracker; record type Australia, Status New (KAN-8)                             |
+| TC-13 | In the app: Products                                                                | Products list opens (KAN-8)                                                                                         |
+| TC-09 | New Account record type list; create **United States** account and start onboarding | Country record types offered, Customer not; US template keys (KAN-2)                                                |
 
 ## Test data
 

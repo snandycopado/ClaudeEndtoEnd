@@ -56,6 +56,51 @@ async function openTab(page, tabLabel, objectApiName) {
   );
 }
 
+/** Open a Lightning app from the App Launcher (no URL fallback: finding the app is what's being tested). */
+async function openApp(page, appLabel) {
+  await page.goto(`${baseUrl()}/lightning/page/home`);
+  await waitForLightning(page);
+  await page.getByRole("button", { name: "App Launcher" }).click();
+  const search = page.getByPlaceholder(/Search apps and items/);
+  await search.waitFor({ timeout: 30_000 });
+  await search.fill(appLabel);
+  await page
+    .locator(`a[data-label="${appLabel}"], one-app-launcher-menu-item a`)
+    .filter({ hasText: new RegExp(`^\\s*${appLabel}\\s*$`) })
+    .first()
+    .click({ timeout: 30_000 });
+  await expect(appName(page)).toHaveText(appLabel);
+}
+
+/** The current app's name in the navigation bar. */
+function appName(page) {
+  return page
+    .locator("one-appnav .appName, one-appnav .slds-context-bar__app-name")
+    .first();
+}
+
+/** Labels of the current app's navigation items, in order. */
+async function navItems(page) {
+  const bar = page.locator("one-app-nav-bar:visible").first();
+  await bar.locator("one-app-nav-bar-item-root").first().waitFor();
+  return bar.locator("one-app-nav-bar-item-root").evaluateAll((items) =>
+    items.map((el) => {
+      const a = el.querySelector("a");
+      return ((a && a.getAttribute("title")) || el.innerText)
+        .split("\n")[0]
+        .trim();
+    })
+  );
+}
+
+/** Click a navigation item of the current app. */
+async function clickNavItem(page, label) {
+  await page
+    .locator(`one-app-nav-bar a[title="${label}"]:visible`)
+    .first()
+    .click();
+}
+
 async function openRecord(page, objectApiName, recordId) {
   await page.goto(`${baseUrl()}/lightning/r/${objectApiName}/${recordId}/view`);
   await waitForLightning(page);
@@ -148,6 +193,10 @@ module.exports = {
   baseUrl,
   waitForLightning,
   openTab,
+  openApp,
+  appName,
+  navItems,
+  clickNavItem,
   openRecord,
   recordHeader,
   clickNew,

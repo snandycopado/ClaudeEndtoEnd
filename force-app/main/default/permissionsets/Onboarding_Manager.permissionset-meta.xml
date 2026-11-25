@@ -1,10 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <applicationVisibilities>
+        <application>Boarding_Automation</application>
+        <visible>true</visible>
+    </applicationVisibilities>
     <classAccesses>
         <apexClass>OnboardingTaskController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Work Account onboarding: Account Status, onboarding progress fields, Onboarding Tasks, the tracker component and the Australia/New Zealand/United States/Canada/Partner record types (Customer retired by KAN-2).</description>
+    <description
+  >Account onboarding: status, progress fields, Onboarding Tasks, tracker, country/Partner record types (KAN-2), Boarding Automation app and read-only Products (KAN-8).</description>
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.Account_Status__c</field>
@@ -85,6 +90,15 @@
         <object>Onboarding_Task__c</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Product2</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
     <recordTypeVisibilities>
         <recordType>Account.Australia</recordType>
         <visible>true</visible>
@@ -109,4 +123,8 @@
         <recordType>Account.United_States</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
+    <tabSettings>
+        <tab>standard-Product2</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>
