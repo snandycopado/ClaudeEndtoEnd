@@ -9,5 +9,5 @@
 | Jira            | https://suman-nandy.atlassian.net/browse/KAN-10                             |
 | Module          | product-catalog                                                             |
 | Branch          | feature/KAN-10-product-code-family                                          |
-| PR              |                                                                             |
-| Status          | Deployed                                                                    |
+| PR              | https://github.com/snandycopado/ClaudeEndtoEnd/pull/11                      |
+| Status          | Deployed, PR open                                                           |
