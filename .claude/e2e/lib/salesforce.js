@@ -60,15 +60,26 @@ async function openTab(page, tabLabel, objectApiName) {
 async function openApp(page, appLabel) {
   await page.goto(`${baseUrl()}/lightning/page/home`);
   await waitForLightning(page);
-  await page.getByRole("button", { name: "App Launcher" }).click();
-  const search = page.getByPlaceholder(/Search apps and items/);
-  await search.waitFor({ timeout: 30_000 });
-  await search.fill(appLabel);
-  await page
+  // The launcher works only once the page has finished loading (the nav bar is rendered).
+  await page.locator("one-app-nav-bar").first().waitFor({ timeout: 60_000 });
+  const result = page
     .locator(`a[data-label="${appLabel}"], one-app-launcher-menu-item a`)
     .filter({ hasText: new RegExp(`^\\s*${appLabel}\\s*$`) })
-    .first()
-    .click({ timeout: 30_000 });
+    .first();
+  // Right after login the launcher can open before its search results render: retry the search once.
+  for (let attempt = 1; ; attempt++) {
+    await page.getByRole("button", { name: "App Launcher" }).click();
+    const search = page.getByPlaceholder(/Search apps and items/);
+    await search.waitFor({ timeout: 30_000 });
+    await search.fill(appLabel);
+    try {
+      await result.click({ timeout: 15_000 });
+      break;
+    } catch (error) {
+      if (attempt >= 2) throw error;
+      await page.keyboard.press("Escape").catch(() => {});
+    }
+  }
   await expect(appName(page)).toHaveText(appLabel);
 }
 

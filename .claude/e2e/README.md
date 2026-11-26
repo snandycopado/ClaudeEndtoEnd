@@ -13,12 +13,15 @@ like a user, and verifies each feature in the UI **and** in the data (SOQL).
 │   ├── salesforce.js         Lightning helpers: openTab, clickNew, record type, fillField, save, Path, toast
 │   └── test-data.js          uniqueName() (prefix E2E-), record types, expected tasks per country
 ├── pages/
-│   └── onboarding-tracker.js page object for the onboardingTaskTracker LWC
+│   ├── onboarding-tracker.js page object for the onboardingTaskTracker LWC
+│   └── product-hero.js       page object for the c-product-image-hero header (KAN-10)
 ├── specs/
 │   └── onboarding/
 │       ├── onboarding-journey.e2e.js    TC-01 … TC-08, TC-10 (serial, one Australia account)
 │       ├── country-record-types.e2e.js  TC-09
 │       └── boarding-automation-app.e2e.js TC-11 … TC-13 (KAN-8)
+│   └── product/
+│       └── product-detail-fields.e2e.js   TC-18 … TC-20 (KAN-10, serial)
 ├── .auth/                     session state (git-ignored — live session)
 └── results/                   report/, artifacts/, results.json (git-ignored)
 ```
@@ -54,6 +57,9 @@ like a user, and verifies each feature in the UI **and** in the data (SOQL).
 | TC-11 | App Launcher → **Boarding Automation**                                              | Nav bar: Home, Accounts, Contacts, Reports, Dashboards, Products in order; AppDefinition Standard/Lightning (KAN-8) |
 | TC-12 | In the app: Accounts → New → Australia → Save                                       | Record page in the app with Path and tracker; record type Australia, Status New (KAN-8)                             |
 | TC-13 | In the app: Products                                                                | Products list opens (KAN-8)                                                                                         |
+| TC-18 | Boarding Automation → Products → New → name, code, first Family option → Save       | Hero shows Product Code and Product Family, no `.brand` element; Product2 ProductCode/Family match (KAN-10)         |
+| TC-19 | Details tab → edit Product Code → Save                                              | Hero shows the new code without reload; SOQL ProductCode updated (KAN-10)                                           |
+| TC-20 | New product with only a name                                                        | Hero shows "—" for both rows; ProductCode and Family null (KAN-10)                                                  |
 | TC-09 | New Account record type list; create **United States** account and start onboarding | Country record types offered, Customer not; US template keys (KAN-2)                                                |
 
 ## Test data
