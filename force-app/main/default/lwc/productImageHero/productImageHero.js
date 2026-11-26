@@ -1,11 +1,26 @@
 import { LightningElement, api, wire } from "lwc";
-import { getRecord, getFieldValue } from "lightning/uiRecordApi";
+import {
+  getRecord,
+  getFieldValue,
+  getFieldDisplayValue
+} from "lightning/uiRecordApi";
+import { getObjectInfo } from "lightning/uiObjectInfoApi";
+import { NavigationMixin } from "lightning/navigation";
 import { refreshApex } from "@salesforce/apex";
+import PRODUCT_OBJECT from "@salesforce/schema/Product2";
 import getProductHero from "@salesforce/apex/ProductImageController.getProductHero";
 import NAME_FIELD from "@salesforce/schema/Product2.Name";
 import FAMILY_FIELD from "@salesforce/schema/Product2.Family";
+import CODE_FIELD from "@salesforce/schema/Product2.ProductCode";
 import DESCRIPTION_FIELD from "@salesforce/schema/Product2.Description";
 import IMAGE_FIELD from "@salesforce/schema/Product2.Product_Image_Version_Id__c";
+
+const EMPTY_VALUE = "—";
+// KAN-10: labelled rows under the price, in this order.
+const DETAIL_FIELDS = [
+  { label: "Product Code", field: CODE_FIELD },
+  { label: "Product Family", field: FAMILY_FIELD }
+];
 
 const IMAGE_URL = "/sfc/servlet.shepherd/version/download/";
 
@@ -17,11 +32,37 @@ function reduceError(error) {
 }
 
 /**
- * KAN-9: top section of the Product record page. Image gallery on the left; brand (Family), name, standard price
- * and description on the right. Refreshes the gallery when Product_Image_Version_Id__c changes (a new upload).
+ * KAN-9 / KAN-10: top section of the Product record page. Image gallery on the left; name, standard price,
+ * Product Code, Product Family and description on the right. Refreshes the gallery when Product_Image_Version_Id__c changes (a new upload).
  */
-export default class ProductImageHero extends LightningElement {
+export default class ProductImageHero extends NavigationMixin(
+  LightningElement
+) {
   @api recordId;
+
+  /**
+   * KAN-10: this page has no standard highlights panel (the hero replaces it), so the record Edit action lives here.
+   * Shown only when the user can edit Products; opens the standard edit dialog.
+   */
+  canEdit = false;
+
+  @wire(getObjectInfo, { objectApiName: PRODUCT_OBJECT })
+  wiredObjectInfo({ data }) {
+    if (data) {
+      this.canEdit = data.updateable === true;
+    }
+  }
+
+  handleEdit() {
+    this[NavigationMixin.Navigate]({
+      type: "standard__recordPage",
+      attributes: {
+        recordId: this.recordId,
+        objectApiName: "Product2",
+        actionName: "edit"
+      }
+    });
+  }
 
   product;
   hero;
@@ -34,7 +75,7 @@ export default class ProductImageHero extends LightningElement {
   @wire(getRecord, {
     recordId: "$recordId",
     fields: [NAME_FIELD],
-    optionalFields: [FAMILY_FIELD, DESCRIPTION_FIELD, IMAGE_FIELD]
+    optionalFields: [CODE_FIELD, FAMILY_FIELD, DESCRIPTION_FIELD, IMAGE_FIELD]
   })
   wiredProduct({ data, error }) {
     if (data) {
@@ -78,8 +119,29 @@ export default class ProductImageHero extends LightningElement {
     return this.product ? getFieldValue(this.product, NAME_FIELD) : "";
   }
 
-  get family() {
-    return this.product ? getFieldValue(this.product, FAMILY_FIELD) : null;
+  /**
+   * Product Code and Product Family rows (KAN-10). A field the user cannot read is not in the record returned by
+   * getRecord (optional field), so its row is hidden; an empty value shows a dash.
+   */
+  get detailRows() {
+    if (!this.product) return [];
+    return DETAIL_FIELDS.filter(
+      ({ field }) => this.product.fields[field.fieldApiName] !== undefined
+    ).map(({ label, field }) => ({
+      labelKey: `${field.fieldApiName}-label`,
+      valueKey: `${field.fieldApiName}-value`,
+      field: field.fieldApiName,
+      label,
+      // Display value = picklist label (Family), as the standard UI shows it.
+      value:
+        getFieldDisplayValue(this.product, field) ??
+        getFieldValue(this.product, field) ??
+        EMPTY_VALUE
+    }));
+  }
+
+  get hasDetailRows() {
+    return this.detailRows.length > 0;
   }
 
   get description() {

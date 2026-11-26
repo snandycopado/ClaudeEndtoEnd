@@ -71,14 +71,22 @@
             </template>
           </div>
           <div class="slds-col slds-size_1-of-1 slds-medium-size_7-of-12">
-            <template lwc:if={family}>
-              <p class="slds-text-title_caps slds-text-color_weak brand">
-                {family}
-              </p>
-            </template>
-            <h1 class="slds-text-heading_large slds-m-top_xx-small name">
-              {name}
-            </h1>
+            <div
+              class="slds-grid slds-grid_align-spread slds-grid_vertical-align-start"
+            >
+              <h1 class="slds-text-heading_large slds-m-top_xx-small name">
+                {name}
+              </h1>
+              <template lwc:if={canEdit}>
+                <lightning-button
+                  label="Edit"
+                  title="Edit this product"
+                  onclick={handleEdit}
+                  class="slds-m-left_small"
+                  data-id="edit-product"
+                ></lightning-button>
+              </template>
+            </div>
             <template lwc:if={hasPrice}>
               <p class="slds-text-heading_medium slds-m-top_small price">
                 <lightning-formatted-number
@@ -86,6 +94,25 @@
                   format-style="currency"
                 ></lightning-formatted-number>
               </p>
+            </template>
+            <template lwc:if={hasDetailRows}>
+              <dl class="slds-dl_horizontal slds-m-top_small product-details">
+                <template for:each={detailRows} for:item="row">
+                  <dt
+                    key={row.labelKey}
+                    class="slds-dl_horizontal__label slds-text-color_weak"
+                  >
+                    {row.label}
+                  </dt>
+                  <dd
+                    key={row.valueKey}
+                    class="slds-dl_horizontal__detail"
+                    data-field={row.field}
+                  >
+                    {row.value}
+                  </dd>
+                </template>
+              </dl>
             </template>
             <template lwc:if={description}>
               <div class="slds-border_top slds-m-top_medium slds-p-top_small">
