@@ -4,7 +4,10 @@ import {
   getFieldValue,
   getFieldDisplayValue
 } from "lightning/uiRecordApi";
+import { getObjectInfo } from "lightning/uiObjectInfoApi";
+import { NavigationMixin } from "lightning/navigation";
 import { refreshApex } from "@salesforce/apex";
+import PRODUCT_OBJECT from "@salesforce/schema/Product2";
 import getProductHero from "@salesforce/apex/ProductImageController.getProductHero";
 import NAME_FIELD from "@salesforce/schema/Product2.Name";
 import FAMILY_FIELD from "@salesforce/schema/Product2.Family";
@@ -32,8 +35,34 @@ function reduceError(error) {
  * KAN-9 / KAN-10: top section of the Product record page. Image gallery on the left; name, standard price,
  * Product Code, Product Family and description on the right. Refreshes the gallery when Product_Image_Version_Id__c changes (a new upload).
  */
-export default class ProductImageHero extends LightningElement {
+export default class ProductImageHero extends NavigationMixin(
+  LightningElement
+) {
   @api recordId;
+
+  /**
+   * KAN-10: this page has no standard highlights panel (the hero replaces it), so the record Edit action lives here.
+   * Shown only when the user can edit Products; opens the standard edit dialog.
+   */
+  canEdit = false;
+
+  @wire(getObjectInfo, { objectApiName: PRODUCT_OBJECT })
+  wiredObjectInfo({ data }) {
+    if (data) {
+      this.canEdit = data.updateable === true;
+    }
+  }
+
+  handleEdit() {
+    this[NavigationMixin.Navigate]({
+      type: "standard__recordPage",
+      attributes: {
+        recordId: this.recordId,
+        objectApiName: "Product2",
+        actionName: "edit"
+      }
+    });
+  }
 
   product;
   hero;
