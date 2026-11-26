@@ -35,7 +35,13 @@ async function newProduct(page, { name, code, pickFamily }) {
       await page.keyboard.press("Escape");
     }
   }
-  const id = await sf.saveRecord(page, "Product2");
+  // Not sf.saveRecord(): its waitForURL can miss a client-side navigation that already happened.
+  await page.locator('button[name="SaveEdit"]').click();
+  await expect(page).toHaveURL(
+    /\/lightning\/r\/Product2\/[a-zA-Z0-9]{15,18}\/view/,
+    { timeout: 60_000 }
+  );
+  const id = page.url().match(/\/r\/Product2\/([a-zA-Z0-9]{15,18})\/view/)[1];
   return { id, family };
 }
 
@@ -79,14 +85,17 @@ test.describe.serial("Product page header fields (KAN-10)", () => {
     const hero = new ProductHero(page);
     await expect(hero.root).toBeVisible({ timeout: 60_000 });
     await expect(hero.code()).toHaveText(code);
-    await page.getByRole("tab", { name: "Details" }).click();
-    const newCode = uniqueName("CODE2");
-    await page
-      .getByRole("button", { name: /^Edit Product Code/ })
-      .first()
-      .click();
-    await page.getByRole("textbox", { name: "Product Code" }).fill(newCode);
-    await page.getByRole("button", { name: "Save", exact: true }).click();
+    const edit = hero.editButton();
+    await expect(edit).toBeVisible();
+    const newCode = uniqueName("CODE") + "-2";
+    await edit.click();
+    const dialog = page
+      .getByRole("dialog")
+      .filter({ has: page.locator('button[name="SaveEdit"]') });
+    await expect(dialog).toBeVisible();
+    await sf.fillField(page, "Product Code", newCode);
+    await dialog.locator('button[name="SaveEdit"]').click();
+    await expect(dialog).toBeHidden();
     await expect(hero.code()).toHaveText(newCode);
 
     const [p] = soql(`SELECT ProductCode FROM Product2 WHERE Id = '${id}'`);

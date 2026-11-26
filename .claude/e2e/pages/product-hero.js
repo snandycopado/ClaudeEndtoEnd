@@ -7,6 +7,9 @@ class ProductHero {
   name() {
     return this.root.locator("h1");
   }
+  editButton() {
+    return this.root.locator('lightning-button[data-id="edit-product"] button');
+  }
   brand() {
     return this.root.locator(".brand");
   }
