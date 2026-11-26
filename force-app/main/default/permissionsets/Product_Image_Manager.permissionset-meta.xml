@@ -11,6 +11,16 @@
     <description
   >Product Catalog (KAN-9): upload product images on the Product record page (Product edit, image field, Boarding Automation app, standard price read).</description>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Product2.Family</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Product2.ProductCode</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Product2.Product_Image_Version_Id__c</field>
         <readable>true</readable>
