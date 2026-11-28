@@ -14,6 +14,9 @@ import FAMILY_FIELD from "@salesforce/schema/Product2.Family";
 import CODE_FIELD from "@salesforce/schema/Product2.ProductCode";
 import DESCRIPTION_FIELD from "@salesforce/schema/Product2.Description";
 import IMAGE_FIELD from "@salesforce/schema/Product2.Product_Image_Version_Id__c";
+import IS_ACTIVE_FIELD from "@salesforce/schema/Product2.IsActive";
+import INACTIVE_BANNER_LABEL from "@salesforce/label/c.Product_Inactive_Banner";
+import INACTIVE_ASSISTIVE_LABEL from "@salesforce/label/c.Product_Inactive_Assistive";
 
 const EMPTY_VALUE = "—";
 // KAN-10: labelled rows under the price, in this order.
@@ -32,8 +35,9 @@ function reduceError(error) {
 }
 
 /**
- * KAN-9 / KAN-10: top section of the Product record page. Image gallery on the left; name, standard price,
+ * KAN-9 / KAN-10 / KAN-11: top section of the Product record page. Image gallery on the left; name, standard price,
  * Product Code, Product Family and description on the right. Refreshes the gallery when Product_Image_Version_Id__c changes (a new upload).
+ * KAN-11: inactive products (IsActive = false) get an "INACTIVE" ribbon over the image frame and a greyed-out image.
  */
 export default class ProductImageHero extends NavigationMixin(
   LightningElement
@@ -75,7 +79,13 @@ export default class ProductImageHero extends NavigationMixin(
   @wire(getRecord, {
     recordId: "$recordId",
     fields: [NAME_FIELD],
-    optionalFields: [CODE_FIELD, FAMILY_FIELD, DESCRIPTION_FIELD, IMAGE_FIELD]
+    optionalFields: [
+      CODE_FIELD,
+      FAMILY_FIELD,
+      DESCRIPTION_FIELD,
+      IMAGE_FIELD,
+      IS_ACTIVE_FIELD
+    ]
   })
   wiredProduct({ data, error }) {
     if (data) {
@@ -138,6 +148,31 @@ export default class ProductImageHero extends NavigationMixin(
         getFieldValue(this.product, field) ??
         EMPTY_VALUE
     }));
+  }
+
+  labels = {
+    inactiveBanner: INACTIVE_BANNER_LABEL,
+    inactiveAssistive: INACTIVE_ASSISTIVE_LABEL
+  };
+
+  /**
+   * KAN-11: true only when IsActive is exactly false. A user who cannot read IsActive gets no value
+   * (optional field missing from the record), so no ribbon and no error.
+   */
+  get isInactive() {
+    return (
+      !!this.product && getFieldValue(this.product, IS_ACTIVE_FIELD) === false
+    );
+  }
+
+  get inactiveAssistiveText() {
+    return this.isInactive ? this.labels.inactiveAssistive : "";
+  }
+
+  get imageFrameClass() {
+    return this.isInactive
+      ? "image-frame image-frame_inactive slds-align_absolute-center"
+      : "image-frame slds-align_absolute-center";
   }
 
   get hasDetailRows() {
