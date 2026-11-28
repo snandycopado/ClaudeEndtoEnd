@@ -9,5 +9,5 @@
 | Jira            | https://suman-nandy.atlassian.net/browse/KAN-11                             |
 | Module          | product-catalog                                                             |
 | Branch          | feature/KAN-11-inactive-banner                                              |
-| PR              | —                                                                           |
+| PR              | https://github.com/snandycopado/ClaudeEndtoEnd/pull/13                      |
 | Status          | Deployed                                                                    |
