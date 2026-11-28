@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Product_Inactive_Assistive</fullName>
+        <categories>Product_Catalog</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Product inactive (screen reader)</shortDescription>
+        <value>This product is inactive.</value>
+    </labels>
+    <labels>
+        <fullName>Product_Inactive_Banner</fullName>
+        <categories>Product_Catalog</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Product inactive ribbon</shortDescription>
+        <value>INACTIVE</value>
+    </labels>
+</CustomLabels>

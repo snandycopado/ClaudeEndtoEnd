@@ -6,6 +6,7 @@ paths:
   - "force-app/**/customMetadata/Onboarding_Task_Template.*"
   - "force-app/**/email/Onboarding_*/**"
   - "force-app/**/objects/Account/fields/Onboarding_*"
+  - "force-app/**/applications/Boarding_Automation*"
 ---
 
 # Onboarding module (prefix: Onboarding / onboarding)
@@ -30,6 +31,11 @@ when every task is Completed, set the Account to **Active**.
   task fields read-only, Edit/Delete/Clone excluded. **UI-only control**: `Onboarding_Manager` still grants edit/delete
   on the object (completeTask needs `update as user`), so list views, API and Flows can still change or delete tasks.
   A validation rule (no Completed → other status) / `allowDelete=false` is an architect decision.
+- Lightning app **Boarding Automation** (`applications/Boarding_Automation`, KAN-8): standard navigation, desktop + phone,
+  tabs Home, Accounts, Contacts, Reports, Dashboards, Products (in that order). Visible through `Onboarding_Manager`
+  (`applicationVisibilities`, not default), which also grants Products tab + **read-only** Product2. Profiles may still hide
+  standard tabs: manual admin check. Since KAN-9 the app also sets `Product_Record_Page` as the Product View page (Product Catalog module), and
+  `Onboarding_Manager` can see it read-only (image field read, Pricebook2 read, `ProductImageController`).
 - `OnboardingEmailQueueable`: owner email per new task using `Email_Template_Name__c`
   (default `Onboarding_Task_Assigned`, folder email/Onboarding_Email_Templates).
 
@@ -43,7 +49,7 @@ when every task is Completed, set the Account to **Active**.
   Description, Template_Key__c (prevents duplicates on restart), Completed_Date__c, Completed_By__c.
 - Account fields: Onboarding_Tasks_Total__c, Onboarding_Tasks_Completed__c (roll-ups), Onboarding_Progress__c,
   Onboarding_Completed_Date__c.
-- Permission set `Onboarding_Manager` (also record type visibility: Australia, New_Zealand, United_States, Canada,
+- Permission set `Onboarding_Manager` (also the Boarding Automation app and Product2 read (KAN-8); record type visibility: Australia, New_Zealand, United_States, Canada,
   Partner; Customer `visible=false` since KAN-2. Permission set deploys don't remove omitted entries, so revoke with visible=false).
 
 ## Behaviour

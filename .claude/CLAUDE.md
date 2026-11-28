@@ -6,6 +6,8 @@ Sales Cloud. Standard Salesforce DX project — **the project structure is fixed
 all metadata lives in `force-app/main/default/` (one package directory in sfdx-project.json).
 Everything Claude-related lives in `.claude/` (this file, rules, agents, skills, hooks, docs); CI in `.github/`.
 Operating model: .claude/docs/plan.md · Architecture and ADRs: .claude/docs/architecture/.
+**Design documents live in Confluence (master copy)**: space sumannandy, folders _User Story Design Document_,
+_Module Wise Design Document_ and _Framework Document_ (ids in `.claude/confluence.json`, skill: confluence-design).
 
 ## Modules = file-name prefixes
 
@@ -20,9 +22,10 @@ Module knowledge is in `.claude/rules/` and loads automatically when you open ma
 | Shared Account model          | Account record types/status/email, layout, record page, Path, AccountTrigger | rules/shared.md                           | Live                   |
 | Onboarding                    | Onboarding*, onboardingTaskTracker                                           | rules/modules/onboarding.md               | Live                   |
 | Lifecycle Management          | Lcm*, LCM_*, lcmVendorNotifier                                               | rules/modules/lifecycle-management.md     | Live                   |
+| Product Catalog               | ProductImage*, productImage*, Product_Image*, Product_Record_Page            | rules/modules/product-catalog.md          | Live                   |
 | Offboarding / SSO             | Offboarding*, offboarding*, Sso*, sso*                                       | rules/modules/offboarding.md, sso.md      | Planned                |
 | Experience Cloud              | experiences/, networks/, sites/                                              | rules/experience.md                       | Planned                |
-| Zapzilla / Product / DocuSign | Zapzilla*, Product*, DocuSign* (dsfs__ = managed, never edit)                | rules/integrations/*.md                   | Planned                |
+| Zapzilla / Product / DocuSign | Zapzilla*, ProductIntegration*, DocuSign* (dsfs__ = managed, never edit)     | rules/integrations/*.md                   | Planned                |
 
 ## Non-negotiable patterns
 
@@ -43,9 +46,13 @@ Module knowledge is in `.claude/rules/` and loads automatically when you open ma
 
 Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start-story.md).
 
-1. Read the story. Write the plan to `.claude/docs/stories/<KEY>.md` (skill: story-to-plan) with four sections:
+1. Read the story and the module/framework design pages in Confluence. Write the design document as a Confluence page
+   `<KEY>: <title>` (skill: story-to-plan → confluence-design) plus the link file `.claude/docs/stories/<KEY>.md`, with four sections:
    Story Description, High Level Design, Low Level Design, Deployment Tracker (with manual steps). STOP for approval
-   with the buttons **Approve / Need improvement** (AskUserQuestion), never a plain-text question.
+   with the buttons **Approve / Need improvement** (AskUserQuestion), never a plain-text question. Right before the
+   buttons, show the design document as a **clickable link** on its own line
+   (`[<KEY>: <title>](https://suman-nandy.atlassian.net/wiki/pages/viewpage.action?pageId=<id>)`) and put the same URL
+   in the question text, so the user can open it for review while the dialog is open.
 2. Branch `feature/<KEY>-short-name` from `develop` (from `main` until `develop` exists). Never commit to
    main or develop — a hook blocks it.
 3. Build — fast. **Do not write Jest tests and do not run any tests** (Jest or Apex). The developer reviews the
@@ -55,18 +62,32 @@ Start every story with `/start-story <KEY or Jira link>` (.claude/commands/start
 4. sf-code-review skill (code-reviewer subagent, one pass). Fix every Blocker.
 5. sf-deploy skill: deploy the story's components to the alias in `.claude/allowed-orgs` **without asking**
    (no tests run: `NoTestRun`). Record the job id in the Deployment Tracker.
-   **5b. E2E** — the one test run Claude does: e2e-test skill (e2e-tester subagent) runs the module's Playwright UI
-   scenarios in `.claude/e2e/` against that org, and adds a `TC-nn` scenario per acceptance criterion. Record
-   passed/failed in the Deployment Tracker and the PR. Fix story-caused failures, then redeploy. Jest/Apex stay with the developer.
-6. Update the Deployment Tracker (manual steps, status) and the module rule file in the same change.
-7. pr-description skill → push the branch, open a PR.
+6. Update the Deployment Tracker on the Confluence page (manual steps, status), the module rule file, and the module's
+   page in Confluence _Module Wise Design Document_ (current module design; story added to its Stories list) in the same change.
+   Read the page again before building and before the PR, because people may edit it.
+7. pr-description skill → push the branch, open the **story PR** (feature code only, no E2E tests).
+   7b. **E2E — asked only now, after the story PR is open**: one button dialog with **E2E tests** (Yes / No) and
+   **Run mode** (background / browser), each saying why. Yes → branch `feature/<KEY>-e2e-tests` from the story branch;
+   the e2e-test skill (e2e-tester subagent) writes a `TC-nn` scenario per acceptance criterion and runs them in the chosen
+   mode; a story-caused failure is fixed on the **story** branch and redeployed. Open a **separate E2E PR** (base: the
+   story branch) with the specs and the result. No → write "E2E skipped by the user" in the tracker and the story PR.
 8. Ask the user to verify in esm-dev with the buttons **Feature working fine / Need improvement**. Need improvement →
-   get the text, fix, redeploy, ask again. Feature working fine → merge the PR, set Jira to Done, update the plan, and
-   end with "✅ Process completed. Ready for the next story." (details: .claude/commands/start-story.md step 7).
+   get the text, fix, redeploy, ask again. Feature working fine → merge the story PR (then the E2E PR, if any), set Jira
+   to Done, update the plan, and end with "✅ Process completed. Ready for the next story." (details:
+   .claude/commands/start-story.md step 7).
 
-**After the plan is approved, do not ask questions** until the Verify buttons in step 8. Run steps 2–7 end to end. Stop only for a real blocker (a deploy
+**After the plan is approved, do not ask questions** except the E2E dialog in step 7b and the Verify buttons in step 8.
+Run steps 2–7 end to end. Stop only for a real blocker (a deploy
 failure you cannot fix, a hook block, or a change of scope) or a **destructive change**. Record deviations in the plan
 and the PR. Questions belong in planning, before "Approve this plan?".
+
+**Redeploys never need a question.** After a fix, after "Need improvement", or after a deploy failure Claude can fix,
+redeploy straight away (NoTestRun) and report the job id.
+
+**How to ask (every question).** Ask as few questions as possible: put all planning questions in one button dialog,
+and never ask about something a default or the plan already decides. Every question must say in plain English **why**
+Claude is asking and what changes with the answer, in the question text itself, for example: "Should I write automated
+UI tests for KAN-9? I am asking because they add about 5 minutes, create test records in esm-dev and go into a separate PR."
 
 **Destructive changes are the one exception: always ask first.** Deleting a class, trigger, field, object, record type
 or any other metadata or data needs the user's explicit approval for that specific change, even after plan approval.

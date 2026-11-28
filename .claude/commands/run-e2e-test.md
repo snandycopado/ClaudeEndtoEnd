@@ -26,6 +26,11 @@ Mode:
   tests and press ▶, and stop here: the user drives it.
 - otherwise → headless: `npx playwright test -c .claude/e2e/playwright.config.js <scope>`.
 
+**No mode given?** Ask one button question before running (header "Run mode"): "Should the tests run in the
+background or open a browser? I am asking because the browser lets you watch every click but takes longer and opens a
+window on your screen." Options: **"In the background"** (headless) and **"Open the browser"** (`watch`). Don't ask when
+the input names a mode, or when `/start-story` already has the answer from its E2E dialog (asked after the story PR).
+
 Serial journeys: running one TC from the middle of a journey (e.g. TC-05) fails, because it needs the record that the
 earlier steps create. For a TC inside a serial describe, run the whole describe (its spec file) and say so.
 
@@ -62,4 +67,4 @@ Then:
 - the records created (names starting with `E2E-`, from `sf data query`). They are not deleted; cleanup needs the
   user's approval;
 - "Report: `npm run test:e2e:report` · watch: `/run-e2e-test <scope> watch`";
-- story plan for the scope exists → update its Deployment Tracker row "E2E UI tests" with passed/failed and the date.
+- story design page exists for the scope → update, on the Confluence page, its Deployment Tracker row "E2E UI tests" with passed/failed and the date.
