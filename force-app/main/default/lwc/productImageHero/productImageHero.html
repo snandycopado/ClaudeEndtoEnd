@@ -19,7 +19,23 @@
           <div
             class="slds-col slds-size_1-of-1 slds-medium-size_5-of-12 slds-m-bottom_small"
           >
-            <div class="image-frame slds-align_absolute-center">
+            <div class={imageFrameClass} data-id="image-frame">
+              <!-- Live region is always rendered so a change after Edit/Save is announced (AC5). -->
+              <span
+                class="slds-assistive-text"
+                role="status"
+                data-id="inactive-assistive"
+                >{inactiveAssistiveText}</span
+              >
+              <template lwc:if={isInactive}>
+                <div
+                  class="inactive-ribbon"
+                  aria-hidden="true"
+                  data-id="inactive-ribbon"
+                >
+                  {labels.inactiveBanner}
+                </div>
+              </template>
               <template lwc:if={hasImages}>
                 <img
                   class="product-image"

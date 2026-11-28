@@ -22,6 +22,9 @@ Product record page with product images (KAN-9). Not the Product _integration_ (
   labelled rows **Product Code** and **Product Family** (KAN-10; empty → "—", row hidden when the field is not readable —
   detected by the optional field missing from the getRecord result). No brand line above the name any more. When `Product_Image_Version_Id__c` changes it calls `refreshApex` (how a new upload appears).
   Images load from `/sfc/servlet.shepherd/version/download/<ContentVersionId>`.
+  KAN-11: optional `IsActive` → when exactly `false` the image frame gets `image-frame_inactive` (greyscale, 55% opacity) and a
+  red diagonal ribbon (label `Product_Inactive_Banner`, also over the placeholder); an always-rendered `role="status"`
+  span announces `Product_Inactive_Assistive`. IsActive not readable → no ribbon, no error. LDS refreshes it after Edit/Save.
 - `productImageUploader`: `lightning-file-upload` (png/jpg/jpeg/gif/webp, multiple) links files to the Product, then
   `ProductImageController.setProductImage(productId, last file's documentId)` → `notifyRecordUpdateAvailable`.
 
@@ -33,7 +36,8 @@ Product record page with product images (KAN-9). Not the Product _integration_ (
   image → else `ValidationException`; `update as user`). Price is skipped when the user can't read PricebookEntry.
 - Permission sets: **Product_Image_Manager** (uploaders: Product2 Read/Edit, field edit, Pricebook2 read, class, app,
   tab; assigned manually). **Onboarding_Manager** sees the page read-only (field read, Pricebook2 read, class).
-  Both grant read on Product2.ProductCode and Product2.Family (KAN-10).
+  Both grant read on Product2.ProductCode and Product2.Family (KAN-10) and Product2.IsActive (KAN-11).
+- Custom labels (`labels/CustomLabels.labels-meta.xml`, category Product_Catalog): Product_Inactive_Banner, Product_Inactive_Assistive.
 
 ## Known limitations
 
@@ -43,4 +47,4 @@ Product record page with product images (KAN-9). Not the Product _integration_ (
 
 ## Tests
 
-`ProductImageControllerTest` (developer runs it). E2E (if chosen): `specs/product/product-image.e2e.js`, TC-14..17.
+`ProductImageControllerTest` (developer runs it). E2E (if chosen): `specs/product/product-image.e2e.js`, TC-14..17; `specs/product/product-detail-fields.e2e.js`, TC-18..20; KAN-11 proposed TC-21..24.

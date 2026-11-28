@@ -3,6 +3,8 @@
 }
 
 .image-frame {
+  position: relative;
+  overflow: hidden;
   min-height: 15rem;
   padding: var(--slds-g-spacing-4, 1rem);
   border-radius: var(--slds-g-radius-border-3, 0.5rem);
@@ -13,6 +15,31 @@
   max-width: 100%;
   max-height: 15rem;
   object-fit: contain;
+}
+
+/* KAN-11: inactive product — diagonal ribbon top-left, greyed-out image. */
+.inactive-ribbon {
+  position: absolute;
+  /* Ribbon geometry: no SLDS hook matches the -3rem offset or the 12rem band width. */
+  top: var(--slds-g-spacing-5, 1.5rem);
+  left: -3rem;
+  z-index: 1;
+  width: 12rem;
+  padding: var(--slds-g-spacing-1, 0.25rem) 0;
+  transform: rotate(-45deg);
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: var(--slds-g-font-weight-bold, 700);
+  letter-spacing: 0.1em;
+  color: var(--slds-g-color-neutral-base-100, #ffffff);
+  background: var(--slds-g-color-error-base-40, #ba0517);
+  box-shadow: var(--slds-g-shadow-2, 0 2px 4px rgba(0, 0, 0, 0.2));
+  pointer-events: none;
+}
+
+.image-frame_inactive .product-image {
+  filter: grayscale(100%);
+  opacity: 0.55;
 }
 
 .dot {
