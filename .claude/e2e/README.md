@@ -22,6 +22,7 @@ like a user, and verifies each feature in the UI **and** in the data (SOQL).
 │       └── boarding-automation-app.e2e.js TC-11 … TC-13 (KAN-8)
 │   └── product/
 │       └── product-detail-fields.e2e.js   TC-18 … TC-20 (KAN-10, serial)
+│       └── product-inactive-banner.e2e.js TC-21 … TC-24 (KAN-11, serial; runs 21, 24, 22, 23)
 ├── .auth/                     session state (git-ignored — live session)
 └── results/                   report/, artifacts/, results.json (git-ignored)
 ```
@@ -60,6 +61,10 @@ like a user, and verifies each feature in the UI **and** in the data (SOQL).
 | TC-18 | Boarding Automation → Products → New → name, code, first Family option → Save       | Hero shows Product Code and Product Family, no `.brand` element; Product2 ProductCode/Family match (KAN-10)         |
 | TC-19 | Hero **Edit** button → modal → change Product Code → Save                           | Edit button visible; hero shows the new code without reload; SOQL ProductCode updated (KAN-10)                      |
 | TC-20 | New product with only a name                                                        | Hero shows "—" for both rows; ProductCode and Family null (KAN-10)                                                  |
+| TC-21 | New product with **Active** unchecked → open it                                     | INACTIVE ribbon over the placeholder, frame has `image-frame_inactive`; IsActive false (KAN-11)                     |
+| TC-22 | Hero **Edit** → check Active → Save                                                 | Ribbon gone without reload, no inactive class, assistive text empty; IsActive true (KAN-11)                         |
+| TC-23 | Hero **Edit** → uncheck Active → Save                                               | Ribbon shows again without reload; IsActive false (KAN-11)                                                          |
+| TC-24 | Inactive product, read the `role=status` span                                       | Text "This product is inactive."; ribbon is aria-hidden (KAN-11)                                                    |
 | TC-09 | New Account record type list; create **United States** account and start onboarding | Country record types offered, Customer not; US template keys (KAN-2)                                                |
 
 ## Test data
